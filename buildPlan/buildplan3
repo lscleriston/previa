@@ -1,0 +1,128 @@
+## ETAPA 3 — Scaffold da aplicação e Docker
+
+### 3.1 Estrutura de pastas
+Crie a seguinte estrutura de projeto:
+
+```
+forecast-app/
+├── backend/
+│   ├── app.py                  # FastAPI — rotas da API
+│   ├── database.py             # conexão SQLite, queries reutilizáveis
+│   ├── models.py               # Pydantic models para respostas
+│   ├── etl_forecast.py         # script ETL (da Etapa 2)
+│   └── requirements.txt
+├── frontend/
+│   ├── index.html
+│   ├── app.js                  # vanilla JS ou React (sua escolha)
+│   └── styles.css
+├── data/
+│   └── .gitkeep                # pasta onde o xlsx e o forecast.db ficam montados
+├── docker-compose.yml
+└── Dockerfile
+```
+
+### 3.2 Backend FastAPI
+Crie `backend/app.py` com as seguintes rotas iniciais:
+
+```python
+GET  /api/health                          # status da aplicação e data da última carga
+GET  /api/filtros                         # retorna os valores únicos de: gerente, pais, cliente, pratica, produto, cr, ano
+GET  /api/oportunidades?gerente=&pais=&cliente=&pratica=&produto=&cr=&ano=   # lista filtrada
+GET  /api/oportunidades/{chave_ek}        # detalhe de uma oportunidade
+GET  /api/resumo?gerente=&pais=&...       # KPIs agregados: total opp, total RL, breakdown por mês
+POST /api/etl/executar                    # dispara o ETL (lê o xlsx da pasta /data)
+GET  /api/etl/status                      # último registro do etl_log
+```
+
+### 3.3 Frontend — layout moderno
+Crie o frontend com as seguintes características visuais e funcionais:
+
+**Layout geral:**
+- Sidebar esquerda fixa (240px) com navegação entre módulos
+- Header topo com nome da aplicação, data da última carga e botão "Atualizar dados"
+- Área de conteúdo principal com padding generoso
+
+**Design system:**
+- Fonte: Inter ou system-ui
+- Paleta: fundo #0F1117 (dark), cards #1A1D27, bordas #2A2D3E, texto primário #E2E8F0, texto secundário #94A3B8
+- Acentos: azul #3B82F6, verde #10B981, amarelo #F59E0B, vermelho #EF4444
+- Border-radius: 12px para cards, 8px para inputs e badges
+- Sem gradientes decorativos — flat e limpo
+
+**Página inicial — Dashboard:**
+- Linha de filtros no topo: dropdowns para Gerente | País | Cliente | Prática | Produto | Ano — todos carregados da API `/api/filtros`, aplicados em tempo real
+- 4 cards KPI: Total Oportunidades | RL Total Forecast | RL Total Orçado | Desvio %
+- Tabela de oportunidades com colunas: Gerente | Cliente | País | CR | Produto | RL Forecast | RL Orçado | Desvio | Status
+- Paginação client-side (50 por página)
+- Clique na linha abre painel lateral com detalhe completo da oportunidade
+
+**Sidebar — módulos previstos (links, ainda sem conteúdo):**
+- Dashboard (ativo)
+- Análise por CR
+- Análise por Gerente
+- Prévia vs Plano
+- Rateios
+- Configurações
+
+### 3.4 Docker
+Crie `Dockerfile` e `docker-compose.yml`:
+
+```dockerfile
+# Dockerfile — multi-stage
+FROM python:3.12-slim AS backend
+WORKDIR /app
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY backend/ .
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+```
+
+```yaml
+# docker-compose.yml
+version: "3.9"
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data          # xlsx e forecast.db ficam aqui
+      - ./backend:/app            # hot reload no desenvolvimento
+    environment:
+      - XLSX_PATH=/app/data/forecast.xlsx
+      - DB_PATH=/app/data/forecast.db
+  
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+```
+
+### 3.5 requirements.txt
+```
+fastapi==0.111.0
+uvicorn[standard]==0.30.0
+openpyxl==3.1.2
+pandas==2.2.2
+python-multipart==0.0.9
+```
+
+---
+
+## ENTREGAS ESPERADAS
+
+Ao final desta sessão, entregue:
+1. Relatório da Etapa 1 (análise da aba FORECAST) como texto
+2. `etl_forecast.py` — script completo e funcional
+3. `backend/app.py` — FastAPI com todas as rotas
+4. `backend/database.py` — queries e conexão
+5. `frontend/index.html` + `frontend/app.js` + `frontend/styles.css`
+6. `Dockerfile` + `docker-compose.yml`
+7. Instruções de como subir: `docker compose up --build` + como rodar o ETL pela primeira vez
+
+Se tiver dúvidas sobre o mapeamento real de colunas após ler o xlsx, documente as suposições feitas e liste o que precisará ser ajustado.
+
+Comece pela Etapa 1.

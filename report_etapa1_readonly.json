@@ -1,0 +1,1446 @@
+{
+  "row65_headers": [
+    {
+      "idx": 1,
+      "col_letter": "A",
+      "name": "17/02/2025"
+    },
+    {
+      "idx": 2,
+      "col_letter": "B",
+      "name": "Forecast"
+    },
+    {
+      "idx": 3,
+      "col_letter": "C",
+      "name": "MSP/I&CS/IT Infra & Cloud Projects"
+    },
+    {
+      "idx": 4,
+      "col_letter": "D",
+      "name": "COLOMBIA"
+    },
+    {
+      "idx": 5,
+      "col_letter": "E",
+      "name": "Farmer"
+    },
+    {
+      "idx": 6,
+      "col_letter": "F",
+      "name": "Cristina Palacio Galeano"
+    },
+    {
+      "idx": 7,
+      "col_letter": "G",
+      "name": "Roberto Antonio Aristizabal"
+    },
+    {
+      "idx": 8,
+      "col_letter": "H",
+      "name": "Cristina Palacio Galeano"
+    },
+    {
+      "idx": 9,
+      "col_letter": "I",
+      "name": "Luiz Fernando Mendes de Paula"
+    },
+    {
+      "idx": 10,
+      "col_letter": "J",
+      "name": "Edna Lizeth Mancera Viuchy"
+    },
+    {
+      "idx": 11,
+      "col_letter": "K",
+      "name": "I&CS"
+    },
+    {
+      "idx": 12,
+      "col_letter": "L",
+      "name": "It Infra & Cloud Projects"
+    },
+    {
+      "idx": 13,
+      "col_letter": "M",
+      "name": "91165"
+    },
+    {
+      "idx": 14,
+      "col_letter": "N",
+      "name": "IBM"
+    },
+    {
+      "idx": 15,
+      "col_letter": "O",
+      "name": "COLOMBIA"
+    },
+    {
+      "idx": 16,
+      "col_letter": "P",
+      "name": "Upsell"
+    },
+    {
+      "idx": 17,
+      "col_letter": "Q",
+      "name": "Serviços especializados"
+    },
+    {
+      "idx": 18,
+      "col_letter": "R",
+      "name": "321965"
+    },
+    {
+      "idx": 19,
+      "col_letter": "S",
+      "name": "321965 - IBM de Colombia - Servicio 6x8 Banco de B"
+    },
+    {
+      "idx": 20,
+      "col_letter": "T",
+      "name": "Não Venda"
+    },
+    {
+      "idx": 21,
+      "col_letter": "U",
+      "name": "Não se Aplica"
+    },
+    {
+      "idx": 22,
+      "col_letter": "V",
+      "name": "Vendas Consultivas / Repactuação / RFP"
+    },
+    {
+      "idx": 23,
+      "col_letter": "W",
+      "name": "RFP"
+    },
+    {
+      "idx": 24,
+      "col_letter": "X",
+      "name": "2025-04-08 00:00:00"
+    },
+    {
+      "idx": 25,
+      "col_letter": "Y",
+      "name": "342002000-4001020020"
+    },
+    {
+      "idx": 26,
+      "col_letter": "Z",
+      "name": "4001020020"
+    },
+    {
+      "idx": 27,
+      "col_letter": "AA",
+      "name": "COP"
+    },
+    {
+      "idx": 28,
+      "col_letter": "AB",
+      "name": "12"
+    },
+    {
+      "idx": 29,
+      "col_letter": "AC",
+      "name": ""
+    },
+    {
+      "idx": 30,
+      "col_letter": "AD",
+      "name": "(vazio)"
+    },
+    {
+      "idx": 31,
+      "col_letter": "AE",
+      "name": "(vazio)"
+    },
+    {
+      "idx": 32,
+      "col_letter": "AF",
+      "name": "(vazio)"
+    },
+    {
+      "idx": 33,
+      "col_letter": "AG",
+      "name": "0.011"
+    },
+    {
+      "idx": 34,
+      "col_letter": "AH",
+      "name": "0"
+    },
+    {
+      "idx": 35,
+      "col_letter": "AI",
+      "name": "0"
+    },
+    {
+      "idx": 36,
+      "col_letter": "AJ",
+      "name": "0"
+    },
+    {
+      "idx": 37,
+      "col_letter": "AK",
+      "name": "0"
+    },
+    {
+      "idx": 38,
+      "col_letter": "AL",
+      "name": "0"
+    },
+    {
+      "idx": 39,
+      "col_letter": "AM",
+      "name": "0"
+    },
+    {
+      "idx": 40,
+      "col_letter": "AN",
+      "name": "0"
+    },
+    {
+      "idx": 41,
+      "col_letter": "AO",
+      "name": "0"
+    },
+    {
+      "idx": 42,
+      "col_letter": "AP",
+      "name": "0"
+    },
+    {
+      "idx": 43,
+      "col_letter": "AQ",
+      "name": "0"
+    },
+    {
+      "idx": 44,
+      "col_letter": "AR",
+      "name": "0"
+    },
+    {
+      "idx": 45,
+      "col_letter": "AS",
+      "name": "0"
+    },
+    {
+      "idx": 46,
+      "col_letter": "AT",
+      "name": "0"
+    },
+    {
+      "idx": 47,
+      "col_letter": "AU",
+      "name": "0"
+    },
+    {
+      "idx": 48,
+      "col_letter": "AV",
+      "name": "0"
+    },
+    {
+      "idx": 49,
+      "col_letter": "AW",
+      "name": "0"
+    },
+    {
+      "idx": 50,
+      "col_letter": "AX",
+      "name": "0"
+    },
+    {
+      "idx": 51,
+      "col_letter": "AY",
+      "name": "0"
+    },
+    {
+      "idx": 52,
+      "col_letter": "AZ",
+      "name": "0"
+    },
+    {
+      "idx": 53,
+      "col_letter": "BA",
+      "name": "0"
+    },
+    {
+      "idx": 54,
+      "col_letter": "BB",
+      "name": "0"
+    },
+    {
+      "idx": 55,
+      "col_letter": "BC",
+      "name": "0"
+    },
+    {
+      "idx": 56,
+      "col_letter": "BD",
+      "name": "0"
+    },
+    {
+      "idx": 57,
+      "col_letter": "BE",
+      "name": "0"
+    },
+    {
+      "idx": 58,
+      "col_letter": "BF",
+      "name": "0"
+    },
+    {
+      "idx": 59,
+      "col_letter": "BG",
+      "name": "0"
+    },
+    {
+      "idx": 60,
+      "col_letter": "BH",
+      "name": "0"
+    },
+    {
+      "idx": 61,
+      "col_letter": "BI",
+      "name": "0"
+    },
+    {
+      "idx": 62,
+      "col_letter": "BJ",
+      "name": "0"
+    },
+    {
+      "idx": 63,
+      "col_letter": "BK",
+      "name": "0"
+    },
+    {
+      "idx": 64,
+      "col_letter": "BL",
+      "name": "0"
+    },
+    {
+      "idx": 65,
+      "col_letter": "BM",
+      "name": "0"
+    },
+    {
+      "idx": 66,
+      "col_letter": "BN",
+      "name": "0"
+    },
+    {
+      "idx": 67,
+      "col_letter": "BO",
+      "name": "0"
+    },
+    {
+      "idx": 68,
+      "col_letter": "BP",
+      "name": "0"
+    },
+    {
+      "idx": 69,
+      "col_letter": "BQ",
+      "name": "0"
+    },
+    {
+      "idx": 70,
+      "col_letter": "BR",
+      "name": "0"
+    },
+    {
+      "idx": 71,
+      "col_letter": "BS",
+      "name": "0"
+    },
+    {
+      "idx": 72,
+      "col_letter": "BT",
+      "name": "0"
+    },
+    {
+      "idx": 73,
+      "col_letter": "BU",
+      "name": "0"
+    },
+    {
+      "idx": 74,
+      "col_letter": "BV",
+      "name": "0"
+    },
+    {
+      "idx": 75,
+      "col_letter": "BW",
+      "name": "0"
+    },
+    {
+      "idx": 76,
+      "col_letter": "BX",
+      "name": "40421.7866198557"
+    },
+    {
+      "idx": 77,
+      "col_letter": "BY",
+      "name": "0"
+    },
+    {
+      "idx": 78,
+      "col_letter": "BZ",
+      "name": "0"
+    },
+    {
+      "idx": 79,
+      "col_letter": "CA",
+      "name": "0"
+    },
+    {
+      "idx": 80,
+      "col_letter": "CB",
+      "name": "0"
+    },
+    {
+      "idx": 81,
+      "col_letter": "CC",
+      "name": "0"
+    },
+    {
+      "idx": 82,
+      "col_letter": "CD",
+      "name": "0"
+    },
+    {
+      "idx": 83,
+      "col_letter": "CE",
+      "name": "0"
+    },
+    {
+      "idx": 84,
+      "col_letter": "CF",
+      "name": "0"
+    },
+    {
+      "idx": 85,
+      "col_letter": "CG",
+      "name": "0"
+    },
+    {
+      "idx": 86,
+      "col_letter": "CH",
+      "name": "40421.7866198557"
+    },
+    {
+      "idx": 87,
+      "col_letter": "CI",
+      "name": "0"
+    },
+    {
+      "idx": 88,
+      "col_letter": "CJ",
+      "name": "0"
+    },
+    {
+      "idx": 89,
+      "col_letter": "CK",
+      "name": "0"
+    },
+    {
+      "idx": 90,
+      "col_letter": "CL",
+      "name": "0"
+    },
+    {
+      "idx": 91,
+      "col_letter": "CM",
+      "name": "0"
+    },
+    {
+      "idx": 92,
+      "col_letter": "CN",
+      "name": "0"
+    },
+    {
+      "idx": 93,
+      "col_letter": "CO",
+      "name": "0"
+    },
+    {
+      "idx": 94,
+      "col_letter": "CP",
+      "name": "0"
+    },
+    {
+      "idx": 95,
+      "col_letter": "CQ",
+      "name": "0"
+    },
+    {
+      "idx": 96,
+      "col_letter": "CR",
+      "name": "0"
+    },
+    {
+      "idx": 97,
+      "col_letter": "CS",
+      "name": "0"
+    },
+    {
+      "idx": 98,
+      "col_letter": "CT",
+      "name": "0"
+    },
+    {
+      "idx": 99,
+      "col_letter": "CU",
+      "name": "0"
+    },
+    {
+      "idx": 100,
+      "col_letter": "CV",
+      "name": "0"
+    },
+    {
+      "idx": 101,
+      "col_letter": "CW",
+      "name": "0"
+    },
+    {
+      "idx": 102,
+      "col_letter": "CX",
+      "name": "29428435"
+    },
+    {
+      "idx": 103,
+      "col_letter": "CY",
+      "name": "0"
+    },
+    {
+      "idx": 104,
+      "col_letter": "CZ",
+      "name": "0"
+    },
+    {
+      "idx": 105,
+      "col_letter": "DA",
+      "name": "0"
+    },
+    {
+      "idx": 106,
+      "col_letter": "DB",
+      "name": "0"
+    },
+    {
+      "idx": 107,
+      "col_letter": "DC",
+      "name": "0"
+    },
+    {
+      "idx": 108,
+      "col_letter": "DD",
+      "name": "0"
+    },
+    {
+      "idx": 109,
+      "col_letter": "DE",
+      "name": "0"
+    },
+    {
+      "idx": 110,
+      "col_letter": "DF",
+      "name": "0"
+    },
+    {
+      "idx": 111,
+      "col_letter": "DG",
+      "name": "0"
+    },
+    {
+      "idx": 112,
+      "col_letter": "DH",
+      "name": "29428435"
+    },
+    {
+      "idx": 113,
+      "col_letter": "DI",
+      "name": "0"
+    },
+    {
+      "idx": 114,
+      "col_letter": "DJ",
+      "name": "0"
+    },
+    {
+      "idx": 115,
+      "col_letter": "DK",
+      "name": "0"
+    },
+    {
+      "idx": 116,
+      "col_letter": "DL",
+      "name": "0"
+    },
+    {
+      "idx": 117,
+      "col_letter": "DM",
+      "name": "0"
+    },
+    {
+      "idx": 118,
+      "col_letter": "DN",
+      "name": "0"
+    },
+    {
+      "idx": 119,
+      "col_letter": "DO",
+      "name": "0"
+    },
+    {
+      "idx": 120,
+      "col_letter": "DP",
+      "name": "0"
+    },
+    {
+      "idx": 121,
+      "col_letter": "DQ",
+      "name": "0"
+    },
+    {
+      "idx": 122,
+      "col_letter": "DR",
+      "name": "0"
+    },
+    {
+      "idx": 123,
+      "col_letter": "DS",
+      "name": "0"
+    },
+    {
+      "idx": 124,
+      "col_letter": "DT",
+      "name": "0"
+    },
+    {
+      "idx": 125,
+      "col_letter": "DU",
+      "name": "0"
+    },
+    {
+      "idx": 126,
+      "col_letter": "DV",
+      "name": "0"
+    },
+    {
+      "idx": 127,
+      "col_letter": "DW",
+      "name": "0"
+    },
+    {
+      "idx": 128,
+      "col_letter": "DX",
+      "name": "0"
+    },
+    {
+      "idx": 129,
+      "col_letter": "DY",
+      "name": "0"
+    },
+    {
+      "idx": 130,
+      "col_letter": "DZ",
+      "name": "0"
+    },
+    {
+      "idx": 131,
+      "col_letter": "EA",
+      "name": "0"
+    },
+    {
+      "idx": 132,
+      "col_letter": "EB",
+      "name": "0"
+    },
+    {
+      "idx": 133,
+      "col_letter": "EC",
+      "name": "0"
+    },
+    {
+      "idx": 134,
+      "col_letter": "ED",
+      "name": "0"
+    },
+    {
+      "idx": 135,
+      "col_letter": "EE",
+      "name": "0"
+    },
+    {
+      "idx": 136,
+      "col_letter": "EF",
+      "name": "0"
+    },
+    {
+      "idx": 137,
+      "col_letter": "EG",
+      "name": "0"
+    },
+    {
+      "idx": 138,
+      "col_letter": "EH",
+      "name": "0"
+    },
+    {
+      "idx": 139,
+      "col_letter": "EI",
+      "name": "40421.7866198557"
+    },
+    {
+      "idx": 140,
+      "col_letter": "EJ",
+      "name": "Privado"
+    },
+    {
+      "idx": 141,
+      "col_letter": "EK",
+      "name": "MSP/I&CS/IT Infra & Cloud ProjectsIBMCOLOMBIA32196"
+    },
+    {
+      "idx": 142,
+      "col_letter": "EL",
+      "name": ""
+    },
+    {
+      "idx": 143,
+      "col_letter": "EM",
+      "name": ""
+    }
+  ],
+  "samples": [
+    [
+      "17/02/2025",
+      "Forecast",
+      "RECORRENTE",
+      "MEXICO",
+      "Farmer",
+      "Ricardo Alejandro Hernandez",
+      "Roberto Antonio Aristizabal",
+      "Ricardo Alejandro Hernandez",
+      "Roberto Antonio Aristizabal",
+      "Ervin Arley Garcia Hernandez",
+      "DW",
+      "Bodyshop (Dw)",
+      "88779",
+      "MERCADO LIBRE",
+      "MERCADO LIBRE",
+      "Renovação",
+      "Serviços especializados",
+      "321967",
+      "321967 - SERVICIO INGENIERO DE SOPORTE NIVEL 1-MXYU01",
+      "Recorrente",
+      "RECORRENTE",
+      "Vendas Recorrente",
+      "Consultivas",
+      "2025-02-28 00:00:00",
+      "348002018-4002020021",
+      "4002020021",
+      "MXN",
+      "12",
+      "APV-2025-0090",
+      "2025-03-03 00:00:00",
+      "2026-03-02 00:00:00",
+      "2026-03-01 00:00:00",
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "12476.6906259359",
+      "12369.2606888361",
+      "12249.2413995884",
+      "12627.9690815399",
+      "12736.0654234179",
+      "12681.7869101979",
+      "12650.9778317643",
+      "12420.8914728682",
+      "12724.3952351863",
+      "12491.6551724138",
+      "125428.9338417487",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "12476.6906259359",
+      "12369.2606888361",
+      "12249.2413995884",
+      "12627.9690815399",
+      "12736.0654234179",
+      "12681.7869101979",
+      "12650.9778317643",
+      "12420.8914728682",
+      "12724.3952351863",
+      "12491.6551724138",
+      "125428.9338417487",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "41659.67",
+      "416596.6999999999",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "12476.6906259359",
+      "12369.2606888361",
+      "12249.2413995884",
+      "12627.9690815399",
+      "12736.0654234179",
+      "12681.7869101979",
+      "12650.9778317643",
+      "12420.8914728682",
+      "12724.3952351863",
+      "12491.6551724138",
+      "125428.9338417487",
+      "228727.5202093",
+      "Privado",
+      "RECORRENTEMERCADO LIBREMERCADO LIBRE321967 - SERVICIO INGENIERO DE SOPORTE NIVEL 1-MXYU0117/02/2025",
+      "",
+      ""
+    ],
+    [
+      "17/02/2025",
+      "Forecast",
+      "Sem produtos Salvo na Lista",
+      "COLOMBIA",
+      "Hunter",
+      "Diana Carolina Fajardo Mora",
+      "Diana Carolina Fajardo Mora",
+      "",
+      "Roberto Antonio Aristizabal",
+      "Jessica Maria Boterio Agudelo",
+      "DW",
+      "Intuitive Service Desk",
+      "105527",
+      "FALCK",
+      "FALCK",
+      "Novo Cliente",
+      "Saúde",
+      "321955",
+      "321955_GRUPO FALCK_Service Desk",
+      "Não Venda",
+      "Não se Aplica",
+      "Vendas Consultivas / Repactuação / RFP",
+      "Consultivas",
+      "2025-07-10 00:00:00",
+      "342002000-4001020020",
+      "4001020020",
+      "COP",
+      "36",
+      "",
+      "(vazio)",
+      "(vazio)",
+      "(vazio)",
+      "0.011",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "57358.8971256837",
+      "55965.588178927",
+      "55000.6286598617",
+      "56117.0569042324",
+      "57358.8971256837",
+      "58906.9114066542",
+      "58990.708099365",
+      "59669.7630597895",
+      "60189.4031107082",
+      "58409.1701156596",
+      "577967.023786565",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "41759227.31",
+      "417592273.1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "1384542.34339988",
+      "Privado",
+      "Sem produtos Salvo na ListaFALCKFALCK321955_GRUPO FALCK_Service Desk17/02/2025",
+      "",
+      ""
+    ],
+    [
+      "17/02/2025",
+      "Forecast",
+      "REAJUSTE 2026",
+      "MEXICO",
+      "Farmer",
+      "Ricardo Alejandro Hernandez",
+      "Roberto Antonio Aristizabal",
+      "Ricardo Alejandro Hernandez",
+      "Roberto Antonio Aristizabal",
+      "Ervin Arley Garcia Hernandez",
+      "DW",
+      "Bodyshop (Dw)",
+      "88779",
+      "MERCADO LIBRE",
+      "MERCADO LIBRE",
+      "Renovação",
+      "Serviços especializados",
+      "321967",
+      "321967 - SERVICIO INGENIERO DE SOPORTE NIVEL 1-MXYU01",
+      "Recorrente",
+      "REAJUSTE",
+      "Vendas Recorrente",
+      "Consultivas",
+      "2025-02-28 00:00:00",
+      "348002018-4002020021",
+      "4002020021",
+      "MXN",
+      "10",
+      "APV-2025-0090",
+      "2025-03-03 00:00:00",
+      "2026-03-02 00:00:00",
+      "2026-03-01 00:00:00",
+      "0",
+      "1",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "385.528601377658",
+      "382.209026128266",
+      "378.500441046751",
+      "390.203091846014",
+      "393.543258942219",
+      "391.866057838661",
+      "390.914060127543",
+      "383.804412641622",
+      "393.182651191203",
+      "385.991004497751",
+      "3875.7426056376885",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "385.528601377658",
+      "382.209026128266",
+      "378.500441046751",
+      "390.203091846014",
+      "393.543258942219",
+      "391.866057838661",
+      "390.914060127543",
+      "383.804412641622",
+      "393.182651191203",
+      "385.991004497751",
+      "3875.7426056376885",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "1287.28",
+      "12872.800000000001",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "385.528601377658",
+      "382.209026128266",
+      "378.500441046751",
+      "390.203091846014",
+      "393.543258942219",
+      "391.866057838661",
+      "390.914060127543",
+      "383.804412641622",
+      "393.182651191203",
+      "385.991004497751",
+      "3875.7426056376885",
+      "228727.5202093",
+      "Privado",
+      "REAJUSTE 2026MERCADO LIBREMERCADO LIBRE321967 - SERVICIO INGENIERO DE SOPORTE NIVEL 1-MXYU0117/02/2025",
+      "",
+      ""
+    ],
+    [
+      "17/03/2025",
+      "Forecast",
+      "Sem produtos Salvo na Lista",
+      "BRASIL",
+      "Farmer",
+      "Ana Paula Sofa",
+      "Octavio Carvalho Vasconcellos",
+      "Ana Paula Sofa",
+      "Octavio Carvalho Vasconcellos",
+      "Helder Ribeiro de Araujo Goulart",
+      "DW",
+      "Field Services Management",
+      "82057",
+      "WEG",
+      "WEG",
+      "Upsell",
+      "Indústria Transformação",
+      "322175",
+      "322175 - WEG - LPU Atendimento de cabeamento estruturado",
+      "Não Venda",
+      "Não se Aplica",
+      "Vendas Consultivas / Repactuação / RFP",
+      "Consultivas",
+      "2025-11-28 00:00:00",
+      "341000080-4000020137",
+      "4000020137",
+      "BRL",
+      "12",
+      "",
+      "(vazio)",
+      "(vazio)",
+      "(vazio)",
+      "0.1015",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "0",
+      "4608",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "512",
+      "0",
+      "4608",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "4608",
+      "Privado",
+      "Sem produtos Salvo na ListaWEGWEG322175 - WEG - LPU Atendimento de cabeamento estruturado17/03/2025",
+      "",
+      ""
+    ],
+    [
+      "17/03/2025",
+      "Forecast",
+      "Sem produtos Salvo na Lista",
+      "BRASIL",
+      "Farmer",
+      "Elisangela Barbosa Da Silva",
+      "Octavio Carvalho Vasconcellos",
+      "Elisangela Barbosa Da Silva",
+      "Octavio Carvalho Vasconcellos",
+      "Marcio Pereira de Miranda",
+      "I&CS",
+      "It Infra & Cloud Projects",
+      "98327",
+      "BANCO CARREFOUR",
+      "BANCO CARREFOUR",
+      "Upsell",
+      "Financeiro",
+      "322181",
+      "322181 - Banco Carrefour  - Prestação de serviços para o processo de GEROT BDN",
+      "Perdido",
+      "Não se Aplica",
+      "Vendas Consultivas / Repactuação / RFP",
+      "Consultivas",
+      "2025-04-09 00:00:00",
+      "341000079-4000020136",
+      "4000020136",
+      "BRL",
+      "12",
+      "",
+      "(vazio)",
+      "(vazio)",
+      "(vazio)",
+      "0.1015",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "Privado",
+      "Sem produtos Salvo na ListaBANCO CARREFOURBANCO CARREFOUR322181 - Banco Carrefour  - Prestação de serviços para o processo de GEROT BDN17/03/2025",
+      "",
+      ""
+    ]
+  ]
+}
