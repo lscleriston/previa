@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite database files
+*.db
+
+# Excel raw data
+data/raw/*.xlsx
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules
+node_modules/

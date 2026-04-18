@@ -10,9 +10,9 @@ services:
       - ./data:/app/data          # banco e arquivos xlsx devem estar aqui
       - ./backend:/app/backend    # hot reload
     environment:
-      - DB_PATH=/app/data/previadb.db
-      - XLSX_PATH=/app/data/Forecast Semanal 2026 - Abril.xlsx
-    command: uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload
+      - DB_PATH=/app/data/db/previadb.db
+      - XLSX_PATH=/app/data/raw/Forecast Semanal 2026 - Abril.xlsx
+    command: uvicorn backend.api.app:app --host 0.0.0.0 --port 8000 --reload
   
   frontend:
     image: nginx:alpine

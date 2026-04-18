@@ -10,15 +10,14 @@ RUN mkdir -p /app/data
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia código do backend e scripts ETL
+# Copia código do backend
 COPY backend/ ./backend/
-COPY etl_forecast.py init_db.py ./
 
 # Variáveis default
-ENV DB_PATH=/app/data/previadb.db
-ENV XLSX_PATH=/app/data/Forecast\ Semanal\ 2026\ -\ Abril.xlsx
+ENV DB_PATH=/app/data/db/previadb.db
+ENV XLSX_PATH=/app/data/raw/Forecast\ Semanal\ 2026\ -\ Abril.xlsx
 
 EXPOSE 8000
 
 # Executa uvicorn
-CMD ["uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "backend.api.app:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light-executive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forecast App</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Forecast Pro</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="index.html" class="active">Dashboard</a>
+                <a href="cr_analysis.html">Análise por CR</a>
+                <a href="#">Análise por Gerente</a>
+                <a href="#">Prévia vs Plano</a>
+                <a href="#">Rateios</a>
+                <a href="#">Configurações</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Visão Geral do Forecast</h1>
+                    <p class="subtitle">Última atualização: <span id="last-update">--</span></p>
+                </div>
+                <div class="header-actions">
+                    <div class="theme-switcher">
+                        <button class="theme-btn" onclick="toggleThemeMenu()" title="Tema">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                              <circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+                              <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <div class="theme-menu" id="theme-menu">
+                            <button onclick="setTheme('dark-default')">
+                              <span class="theme-dot" style="background:#1A1D27"></span> Padrão
+                            </button>
+                            <button onclick="setTheme('slate-corporate')">
+                              <span class="theme-dot" style="background:#141720"></span> Slate Corporate
+                            </button>
+                            <button onclick="setTheme('midnight-green')">
+                              <span class="theme-dot" style="background:#111815"></span> Midnight Green
+                            </button>
+                            <button onclick="setTheme('charcoal-brand')">
+                              <span class="theme-dot" style="background:#181B1F"></span> Charcoal Brand
+                            </button>
+                            <button onclick="setTheme('light-executive')">
+                              <span class="theme-dot" style="background:#E2E8F0"></span> Light Executive
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="atualizarDados()">Atualizar Dados</button>
+                </div>
+            </header>
+
+            <section class="filters-section">
+                <div class="filter-group">
+                    <label>Gerente</label>
+                    <select id="filter-gerente" onchange="carregarResumo()"><option value="">Todos</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>País</label>
+                    <select id="filter-pais" onchange="carregarResumo()"><option value="">Todos</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Cliente</label>
+                    <select id="filter-cliente" onchange="carregarResumo()"><option value="">Todos</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Prática</label>
+                    <select id="filter-pratica" onchange="carregarResumo()"><option value="">Todas</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Categoria</label>
+                    <select id="filter-produto" onchange="carregarResumo()"><option value="">Todos</option></select>
+                </div>
+            </section>
+
+            <section class="kpi-grid">
+                <div class="kpi-card">
+                    <h3>Total Oportunidades</h3>
+                    <p class="kpi-value" id="kpi-total-opp">0</p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Receita Líquida (Forecast)</h3>
+                    <p class="kpi-value text-blue" id="kpi-rl-forecast">R$ 0,00</p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Receita Bruta</h3>
+                    <p class="kpi-value text-green" id="kpi-rb-total">R$ 0,00</p>
+                </div>
+            </section>
+
+            <section class="table-section">
+                <div class="table-header">
+                    <h3>Oportunidades (Top 50)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table id="opp-table">
+                        <thead>
+                            <tr>
+                                <th>Gerente Comercial</th>
+                                <th>País</th>
+                                <th>Cliente</th>
+                                <th>Prática / Produto</th>
+                                <th>Receita Líquida</th>
+                                <th>Receita Bruta</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="opp-body">
+                            <!-- JS preenche as linhas aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+</body>
+</html>
