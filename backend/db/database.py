@@ -312,15 +312,36 @@ def get_lancamentos_por_cr_categoria(cr, categoria, mes_ref=None):
             return [dict(row) for row in cursor.fetchall()]
 
         resultado = slug_to_resultado.get(categoria, categoria)
-        query = ("SELECT COALESCE(justificativa, '') as descricao,"
-                 " COALESCE(cr_envio, cr_destino, '') as origem,"
-                 " COALESCE(incremento_credito, incremento_debito, 0) as valor"
-                 " FROM ajustamentos_gerencia"
-                 " WHERE resultado = ?"
-                 " AND (cr_credito = ? OR cr_debito = ?)")
-        params = [resultado, cr, cr]
+        query = (
+            "SELECT COALESCE(NULLIF(justificativa, ''), resultado) AS descricao,"
+            " COALESCE(origin.Des_CR, origin.CR_SAP, origin.Cod_Cr, a.orig_cr, a.desc_cr_envio, a.desc_cr_destino, '') AS origem,"
+            " a.aba_origem AS aba_origem,"
+            " CASE"
+            " WHEN a.cr_credito = ? THEN ABS(a.incremento_credito)"
+            " WHEN a.cr_debito = ? THEN -ABS(a.incremento_debito)"
+            " WHEN a.cr_envio = ? THEN ABS(a.incremento_credito)"
+            " WHEN a.cr_destino = ? THEN -ABS(a.incremento_debito)"
+            " ELSE COALESCE(a.incremento_credito, a.incremento_debito, 0) END AS valor"
+            " FROM ("
+            " SELECT *, CASE"
+            " WHEN cr_credito = ? THEN COALESCE(cr_debito, cr_destino, cr_envio, '')"
+            " WHEN cr_debito = ? THEN COALESCE(cr_credito, cr_envio, cr_destino, '')"
+            " WHEN cr_envio = ? THEN COALESCE(cr_destino, cr_credito, cr_debito, '')"
+            " WHEN cr_destino = ? THEN COALESCE(cr_envio, cr_credito, cr_debito, '')"
+            " ELSE COALESCE(cr_envio, cr_destino, cr_credito, cr_debito, '') END AS orig_cr"
+            " FROM ajustamentos_gerencia"
+            " ) AS a"
+            " LEFT JOIN dim_cr origin ON (origin.CR_SAP = a.orig_cr OR origin.Cod_Cr = a.orig_cr)"
+            " WHERE LOWER(TRIM(a.resultado)) = LOWER(TRIM(?))"
+            " AND (a.cr_credito = ? OR a.cr_debito = ? OR a.cr_envio = ? OR a.cr_destino = ?)")
+        params = [
+            cr, cr, cr, cr,
+            cr, cr, cr, cr,
+            resultado,
+            cr, cr, cr, cr
+        ]
         if mes_ref:
-            query += " AND mes_ref = ?"
+            query += " AND a.mes_ref = ?"
             params.append(mes_ref)
 
         cursor.execute(query, params)

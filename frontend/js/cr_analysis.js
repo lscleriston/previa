@@ -460,7 +460,8 @@ function renderDRE(item) {
                         <thead>
                             <tr>
                                 <th>Descrição</th>
-                                <th>Origem</th>
+                                <th>CR Origem</th>
+                                <th>Aba de Origem</th>
                                 <th>Valor</th>
                             </tr>
                         </thead>
@@ -475,6 +476,10 @@ function renderDRE(item) {
                         const origemTd = document.createElement('td');
                         origemTd.textContent = entry.origem || '-';
                         entryRow.appendChild(origemTd);
+
+                        const abaTd = document.createElement('td');
+                        abaTd.textContent = entry.aba_origem || '-';
+                        entryRow.appendChild(abaTd);
 
                         const valorTd = document.createElement('td');
                         valorTd.textContent = formatCurrency(entry.valor ?? 0);

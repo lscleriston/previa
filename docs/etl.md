@@ -53,6 +53,7 @@ Executar nessa ordem garante que a dimensão de CR esteja disponível antes das 
 - Abas lidas: `GERENCIA EDILSON`, `GERENCIA OCTAVIO`, `GERENCIA WESLEY`
 - Tabela SQLite populada: `ajustamentos_gerencia`
 - Estrutura: cada aba fornece ajustes de crédito e débito, com `resultado`, `mes_ref`, `cr_credito` e `cr_debito`
+- Novo campo gravado: `aba_origem` registra o nome da aba Excel de onde veio o lançamento
 - Chave de integração: auto-incremento `id`
 - Exemplo:
   ```bash

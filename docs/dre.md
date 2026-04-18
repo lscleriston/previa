@@ -17,6 +17,7 @@ A DRE do PREVIA visa comparar o orçado com a prévia por CR (Cost Center), leva
 - `ajustamentos_gerencia`
   - Registra ajustes de crédito e débito por `CR` e `resultado`
   - Usada para ajustar valores de previsão e alimentar categorias adicionais de DRE
+  - Inclui `aba_origem` para indicar de qual aba Excel veio o lançamento
 - `previa_folha_th`
   - Contém valores de folha previstos por `cr` e `mes_ref`
   - Usada como previsão de custo de pessoal na DRE

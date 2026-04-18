@@ -30,10 +30,12 @@ def create_table_if_not_exists(conn):
             gestor_cr_envio TEXT,
             cr_destino TEXT,
             desc_cr_destino TEXT,
-            gestor_cr_destino TEXT
+            gestor_cr_destino TEXT,
+            aba_origem TEXT
         )
     ''')
     conn.commit()
+    ensure_aba_origem_column(conn)
 
 def parse_float(val):
     if val is None:
@@ -41,157 +43,162 @@ def parse_float(val):
     try:
         if isinstance(val, (int, float)):
             return float(val)
-        # remove possible R$, spaces, etc
-        s = str(val).replace('R$', '').replace(' ', '').replace(',', '.')
+        s = str(val).replace('R$', '').replace(' ', '').replace('.', '').replace(',', '.')
         return float(s)
     except:
         return 0.0
+
+
+def ensure_aba_origem_column(conn):
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA table_info(ajustamentos_gerencia)")
+    columns = [row[1] for row in cursor.fetchall()]
+    if 'aba_origem' not in columns:
+        cursor.execute("ALTER TABLE ajustamentos_gerencia ADD COLUMN aba_origem TEXT")
+        conn.commit()
+
+
+def normalize_cr(value):
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        if float(value).is_integer():
+            return str(int(value)).strip()
+        return str(value).strip()
+    text = str(value).strip()
+    if text.endswith('.0') and text[:-2].isdigit():
+        return text[:-2]
+    return text
+
+
+def normalize_text(value):
+    if value is None:
+        return None
+    return str(value).strip()
+
 
 def load_sheet(conn, wb, sheet_name):
     if sheet_name not in wb.sheetnames:
         print(f"Aba {sheet_name} não encontrada.")
         return
-        
+
     print(f"Carregando aba: {sheet_name}")
     sheet = wb[sheet_name]
     cursor = conn.cursor()
-    
+
     count = 0
-    
-    # "GERENCIA OCTAVIO" and "GERENCIA WESLEY" have different columns
+
     if sheet_name == "GERENCIA EDILSON":
-        # starts at row 5
         for row in sheet.iter_rows(min_row=5, values_only=True):
-            if not row[0]: continue
-            resultado = str(row[0]) if row[0] is not None else None
-            cr_credito = str(row[1]) if row[1] is not None else None
-            cr_debito = str(row[2]) if row[2] is not None else None
-            
+            if not row[0]:
+                continue
+
+            resultado = normalize_text(row[0])
+            cr_credito = normalize_cr(row[1])
+            cr_debito = normalize_cr(row[2])
             mes_ref = None
             if isinstance(row[3], datetime):
                 mes_ref = row[3].strftime('%Y-%m')
             elif row[3]:
-                try: mes_ref = str(row[3])[:7]
-                except: mes_ref = str(row[3])
-                    
+                mes_ref = normalize_text(str(row[3])[:7])
+
             incremento_credito = parse_float(row[4])
-            justificativa = str(row[5]) if row[5] is not None else None
+            justificativa = normalize_text(row[5])
             incremento_debito = parse_float(row[6])
-            cr_envio = str(row[7]) if row[7] is not None else None
-            desc_cr_envio = str(row[8]) if row[8] is not None else None
-            gestor_cr_envio = str(row[9]) if row[9] is not None else None
-            cr_destino = str(row[10]) if row[10] is not None else None
-            desc_cr_destino = str(row[11]) if row[11] is not None else None
-            gestor_cr_destino = str(row[12]) if row[12] is not None else None
-            
+            cr_envio = normalize_cr(row[7])
+            desc_cr_envio = normalize_text(row[8])
+            gestor_cr_envio = normalize_text(row[9])
+            cr_destino = normalize_cr(row[10])
+            desc_cr_destino = normalize_text(row[11])
+            gestor_cr_destino = normalize_text(row[12])
+
             cursor.execute('''
                 INSERT INTO ajustamentos_gerencia (
                     gerencia, resultado, cr_credito, cr_debito, mes_ref,
                     incremento_credito, justificativa, incremento_debito,
                     cr_envio, desc_cr_envio, gestor_cr_envio,
-                    cr_destino, desc_cr_destino, gestor_cr_destino
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    cr_destino, desc_cr_destino, gestor_cr_destino, aba_origem
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 sheet_name, resultado, cr_credito, cr_debito, mes_ref,
                 incremento_credito, justificativa, incremento_debito,
                 cr_envio, desc_cr_envio, gestor_cr_envio,
-                cr_destino, desc_cr_destino, gestor_cr_destino
+                cr_destino, desc_cr_destino, gestor_cr_destino, sheet_name
             ))
             count += 1
-            
+
     elif sheet_name == "GERENCIA OCTAVIO":
-        # ('Grupo de Conta', 'CR CRÉDITO', 'CR DÉBITO', 'Mês', 'INCREMENTO CRÉDITO', 'INCREMENTO DÉBITO', 'Coordenador', 'Observação')
-        # starts at row 3
         for row in sheet.iter_rows(min_row=3, values_only=True):
-            if not row[0]: continue
-            resultado = str(row[0]) if row[0] is not None else None # 'Grupo de Conta' -> resultado
-            cr_credito = str(row[1]) if row[1] is not None else None
-            cr_debito = str(row[2]) if row[2] is not None else None
-            
+            if not row[0]:
+                continue
+
+            resultado = normalize_text(row[0])
+            cr_credito = normalize_cr(row[1])
+            cr_debito = normalize_cr(row[2])
             mes_ref = None
             if isinstance(row[3], datetime):
                 mes_ref = row[3].strftime('%Y-%m')
             elif row[3]:
-                try: mes_ref = str(row[3])[:7]
-                except: mes_ref = str(row[3])
-                
+                mes_ref = normalize_text(str(row[3])[:7])
+
             incremento_credito = parse_float(row[4])
             incremento_debito = parse_float(row[5])
-            
-            # Map Coordenador to desc / justificativa to observação, ou whatever makes sense, keeping it simple here
-            # I will map 'Coordenador' to gestor_cr_destino for reference, and 'Observacao' to justificativa
-            gestor_cr_destino = str(row[6]) if row[6] is not None else None
-            justificativa = str(row[7]) if row[7] is not None else None
-            
+            gestor_cr_destino = normalize_text(row[6])
+            justificativa = normalize_text(row[7])
+
             cursor.execute('''
                 INSERT INTO ajustamentos_gerencia (
                     gerencia, resultado, cr_credito, cr_debito, mes_ref,
                     incremento_credito, justificativa, incremento_debito,
                     cr_envio, desc_cr_envio, gestor_cr_envio,
-                    cr_destino, desc_cr_destino, gestor_cr_destino
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    cr_destino, desc_cr_destino, gestor_cr_destino, aba_origem
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 sheet_name, resultado, cr_credito, cr_debito, mes_ref,
                 incremento_credito, justificativa, incremento_debito,
                 None, None, None,
-                None, None, gestor_cr_destino
+                None, None, gestor_cr_destino, sheet_name
             ))
             count += 1
-            
+
     elif sheet_name == "GERENCIA WESLEY":
-        # Similar to OCTAVIO based on the user request usually. Let's make it robust by trying to guess indices
-        # If it's same as Edilson it falls back to parsing cleanly if we are careful. Let's do the safe way:
-        for i, row in enumerate(sheet.iter_rows(min_row=1, values_only=True)):
-            if i < 2: continue # skip header heuristic
-            if len(row) < 5: continue
-            if not row[0]: continue
-            if str(row[0]).upper() in ["RESULTADO", "GRUPO DE CONTA"]: continue # skip header line
-            
-            # let's assume it's like OCTAVIO if len is around 8-10, or like EDILSON if len >= 13
-            is_edilson_like = len(row) >= 13
-            
-            resultado = str(row[0]) if row[0] is not None else None
-            cr_credito = str(row[1]) if row[1] is not None else None
-            cr_debito = str(row[2]) if row[2] is not None else None
-            
+        for row in sheet.iter_rows(min_row=3, values_only=True):
+            if not row[0]:
+                continue
+            if len(row) < 6:
+                continue
+
+            resultado = normalize_text(row[0])
+            cr_credito = normalize_cr(row[1])
+            cr_debito = normalize_cr(row[2])
             mes_ref = None
             if isinstance(row[3], datetime):
                 mes_ref = row[3].strftime('%Y-%m')
             elif row[3]:
-                try: mes_ref = str(row[3])[:7]
-                except: mes_ref = str(row[3])
-                
+                mes_ref = normalize_text(str(row[3])[:7])
+
             incremento_credito = parse_float(row[4])
-            
-            if is_edilson_like:
-                justificativa = str(row[5]) if row[5] is not None else None
-                incremento_debito = parse_float(row[6])
-                gestor_cr_destino = str(row[12]) if row[12] is not None else None
-            else:
-                try:
-                    incremento_debito = parse_float(row[5])
-                    gestor_cr_destino = str(row[6]) if len(row) > 6 and row[6] else None
-                    justificativa = str(row[7]) if len(row) > 7 and row[7] else None
-                except:
-                    incremento_debito = 0.0
-                    gestor_cr_destino = None
-                    justificativa = None
-            
+            incremento_debito = parse_float(row[5])
+            justificativa = normalize_text(row[6]) if len(row) > 6 else None
+            cr_envio = normalize_cr(row[7]) if len(row) > 7 else None
+            desc_cr_envio = normalize_text(row[8]) if len(row) > 8 else None
+            gestor_cr_envio = normalize_text(row[9]) if len(row) > 9 else None
+
             cursor.execute('''
                 INSERT INTO ajustamentos_gerencia (
                     gerencia, resultado, cr_credito, cr_debito, mes_ref,
                     incremento_credito, justificativa, incremento_debito,
                     cr_envio, desc_cr_envio, gestor_cr_envio,
-                    cr_destino, desc_cr_destino, gestor_cr_destino
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    cr_destino, desc_cr_destino, gestor_cr_destino, aba_origem
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 sheet_name, resultado, cr_credito, cr_debito, mes_ref,
                 incremento_credito, justificativa, incremento_debito,
-                None, None, None,
-                None, None, gestor_cr_destino
+                cr_envio, desc_cr_envio, gestor_cr_envio,
+                None, None, None, sheet_name
             ))
             count += 1
-            
+
     conn.commit()
     print(f"Abas '{sheet_name}': Inseridos {count} registros.")
 
