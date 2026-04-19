@@ -19,15 +19,19 @@ function getAuthHeaders() {
     return token ? { 'Authorization': `Bearer ${token}` } : {};
 }
 
+function isLoginPath() {
+    return window.location.pathname.endsWith('/login.html') || window.location.pathname.endsWith('/pages/login.html');
+}
+
 function redirectToLoginIfNeeded() {
     const token = getAccessToken();
-    if (!token && !window.location.pathname.endsWith('/login.html')) {
+    if (!token && !isLoginPath()) {
         window.location.href = '/login.html';
     }
 }
 
 function redirectToAppIfLogged() {
-    if (getAccessToken() && window.location.pathname.endsWith('/login.html')) {
+    if (getAccessToken() && isLoginPath()) {
         window.location.href = '/index.html';
     }
 }
