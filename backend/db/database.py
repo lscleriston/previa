@@ -251,7 +251,7 @@ def get_resumo_por_cr(filtros):
                 ajustes[cr] = {}
             if row['resultado'] not in ajustes[cr]:
                 ajustes[cr][row['resultado']] = 0.0
-            ajustes[cr][row['resultado']] -= row['val']
+            ajustes[cr][row['resultado']] += row['val']
 
         # Rateio automático
         q_rateio = (
