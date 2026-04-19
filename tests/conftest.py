@@ -142,6 +142,10 @@ def test_db_path(tmp_path_factory):
         "INSERT INTO dim_cr (Cod_Cr, CR_SAP, Cliente, Des_CR, Pais, Diretor, Gerente) VALUES (?, ?, ?, ?, ?, ?, ?)",
         ("CR-002", None, "Cliente Dois", "CR Dois", "Brasil", "DIRETOR TESTE", "GERENTE TESTE"),
     )
+    cursor.execute(
+        "INSERT INTO dim_cr (Cod_Cr, CR_SAP, Cliente, Des_CR, Pais, Diretor, Gerente) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        ("CR-003", None, "Cliente Tres", "CR Tres", "Brasil", "DIRETOR TESTE", "GERENTE TESTE"),
+    )
 
     cursor.execute(
         "INSERT INTO forecast_oportunidades (chave_ek, cr, pratica, produto, cliente, gerente, pais) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -150,6 +154,10 @@ def test_db_path(tmp_path_factory):
     cursor.execute(
         "INSERT INTO forecast_oportunidades (chave_ek, cr, pratica, produto, cliente, gerente, pais) VALUES (?, ?, ?, ?, ?, ?, ?)",
         ("EK-002", "CR-002", "Pratica X", "Produto Z", "Cliente Dois", "GERENTE TESTE", "Brasil"),
+    )
+    cursor.execute(
+        "INSERT INTO forecast_oportunidades (chave_ek, cr, pratica, produto, cliente, gerente, pais) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        ("EK-003", "CR-003", "Pratica X", "Produto W", "Cliente Tres", "GERENTE TESTE", "Brasil"),
     )
 
     cursor.execute(
@@ -160,6 +168,10 @@ def test_db_path(tmp_path_factory):
         "INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb) VALUES (?, ?, ?, ?, ?)",
         ("EK-002", "Forecast", "2026-04", 8000.0, 7800.0),
     )
+    cursor.execute(
+        "INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb) VALUES (?, ?, ?, ?, ?)",
+        ("EK-003", "Forecast", "2026-04", 5000.0, 4900.0),
+    )
 
     cursor.execute(
         "INSERT INTO ajustamentos_gerencia (gerencia, resultado, cr_credito, cr_debito, mes_ref, incremento_credito, incremento_debito, justificativa, cr_envio, desc_cr_envio, gestor_cr_envio, cr_destino, desc_cr_destino, gestor_cr_destino, aba_origem) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -168,7 +180,7 @@ def test_db_path(tmp_path_factory):
 
     cursor.execute(
         "INSERT INTO ajustamentos_gerencia (gerencia, resultado, cr_credito, cr_debito, mes_ref, incremento_credito, incremento_debito, justificativa, cr_envio, desc_cr_envio, gestor_cr_envio, cr_destino, desc_cr_destino, gestor_cr_destino, aba_origem) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        ("GERENTE TESTE", "Recuperação Pessoal", None, "CR-002", "2026-04", 0.0, -250.0, "Teste débito recuperação", None, None, None, None, None, None, "TESTE"),
+        ("GERENTE TESTE", "Recuperação Pessoal", None, "CR-003", "2026-04", 0.0, -250.0, "Teste débito recuperação", None, None, None, None, None, None, "TESTE"),
     )
 
     conn.commit()

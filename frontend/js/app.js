@@ -1,5 +1,7 @@
 // app.js
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://127.0.0.1:8001/api'
+    : 'http://backend:8000/api';
 
 async function init() {
     if (document.getElementById('opp-body')) {
@@ -28,8 +30,9 @@ function preencherDropdown(id, arrayData) {
     const select = document.getElementById(id);
     if (!select || !Array.isArray(arrayData)) return;
 
+    select.innerHTML = '<option value="">Todos</option>';
     arrayData.forEach(item => {
-        if(item) {
+        if (item) {
             const op = document.createElement('option');
             op.value = item;
             op.innerText = item.length > 30 ? item.substring(0, 30) + '...' : item;

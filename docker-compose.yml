@@ -5,13 +5,19 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./data:/app/data          # banco e arquivos xlsx devem estar aqui
       - ./backend:/app/backend    # hot reload
     environment:
       - DB_PATH=/app/data/db/previadb.db
       - XLSX_PATH=/app/data/raw/Forecast Semanal 2026 - Abril.xlsx
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     command: uvicorn backend.api.app:app --host 0.0.0.0 --port 8000 --reload
   
   frontend:
@@ -20,3 +26,15 @@ services:
       - "3000:80"
     volumes:
       - ./frontend:/usr/share/nginx/html
+
+  yamltests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: pytest . --html=/reports/result.html -v
+    volumes:
+      - ./tests:/tests
+      - ./reports:/reports

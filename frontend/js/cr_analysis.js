@@ -198,8 +198,8 @@ function deriveMcPercent(item) {
         { label: '(+) Rec. Pessoal', orc: getOrc('Recuperação Pessoal'), pre: getPrevia('Recuperação Pessoal') }
     ];
 
-    const costTotalOrcado = lineValues.reduce((sum, line) => sum + (line.label.startsWith('(+)') ? -line.orc : line.orc), 0);
-    const costTotalPrevia = lineValues.reduce((sum, line) => sum + (line.label.startsWith('(+)') ? -line.pre : line.pre), 0);
+    const costTotalOrcado = lineValues.reduce((sum, line) => sum + line.orc, 0);
+    const costTotalPrevia = lineValues.reduce((sum, line) => sum + line.pre, 0);
 
     const mc_orcado = item.mc_orcado ?? (rl_orcado + costTotalOrcado);
     const mc_previa = item.mc_previa ?? (rl_previa + costTotalPrevia);

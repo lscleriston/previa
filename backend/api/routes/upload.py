@@ -150,7 +150,7 @@ def event_generator(job_id: str):
 @router.post('/etl/upload')
 async def upload_file(file: UploadFile = File(...)):
     if not file.filename.lower().endswith('.xlsx'):
-        raise HTTPException(status_code=400, detail='Somente arquivos .xlsx são aceitos')
+        raise HTTPException(status_code=422, detail='Somente arquivos .xlsx são aceitos')
 
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     data = await file.read()

@@ -98,11 +98,49 @@ def parse_date(val):
     return None
 
 def parse_float(val):
-    if not val: return 0.0
+    if not val:
+        return 0.0
     try:
         return float(val)
     except:
         return 0.0
+
+
+def normalize_header_name(val):
+    if val is None:
+        return ""
+    text = str(val).strip().lower()
+    for src, dst in [('_', ' '), ('-', ' '), ('ç', 'c'), ('é', 'e'), ('á', 'a'), ('ã', 'a'), ('õ', 'o'), ('í', 'i'), ('ó', 'o'), ('ú', 'u')]:
+        text = text.replace(src, dst)
+    return text
+
+
+def find_header_index(headers, candidates):
+    for idx, header in enumerate(headers):
+        if not header:
+            continue
+        for candidate in candidates:
+            if candidate in header:
+                return idx
+    return None
+
+
+def find_forecast_header(sheet, max_rows=20):
+    for row_idx in range(1, max_rows + 1):
+        row = list(sheet.iter_rows(min_row=row_idx, max_row=row_idx, values_only=True))[0]
+        normalized = [normalize_header_name(cell) for cell in row]
+        if (find_header_index(normalized, ['chave ek', 'chave_ek', 'ek', 'e k', 'chave']) is not None and
+                find_header_index(normalized, ['cr sap', 'cr_sap', 'cr', 'cod cr', 'cod_cr']) is not None):
+            return row_idx, normalized
+    fallback = list(sheet.iter_rows(min_row=4, max_row=4, values_only=True))[0]
+    return 4, [normalize_header_name(cell) for cell in fallback]
+
+
+def get_cell(row, idx, default=None):
+    if idx is None or idx < 0:
+        return default
+    return row[idx] if len(row) > idx else default
+
 
 def run_dim_cr_etl(wb, cursor, agora):
     print("Iniciando carga da Dimensão CR...")
@@ -162,6 +200,7 @@ def run_dim_cr_etl(wb, cursor, agora):
 
 def run_etl():
     print(f"Iniciando ETL do arquivo {XLSX_PATH}")
+    print(f"Usando banco de dados em: {DB_PATH}")
     conn = init_db()
     cursor = conn.cursor()
     
@@ -175,46 +214,89 @@ def run_etl():
         
         sheet = wb["FORECAST"]
         
-        # Como descoberto na Etapa 1, os dados reais parecem começar nas primeiras linhas ou na 66 dependendo das ocultas.
-        # Estamos iterando a partir da linha 4
-        
+        header_row_idx, headers = find_forecast_header(sheet)
+        print(f"FORECAST header encontrado em linha {header_row_idx}: {headers}")
+
+        idx_map = {
+            'chave_ek': find_header_index(headers, ['chave ek', 'chave_ek', 'ek', 'e k', 'chave']),
+            'cr': find_header_index(headers, ['cr sap', 'cr_sap', 'cr', 'cod cr', 'cod_cr']),
+            'data_criacao': find_header_index(headers, ['data criacao', 'data de criacao', 'data criacao', 'criacao']),
+            'banco': find_header_index(headers, ['banco']),
+            'pais': find_header_index(headers, ['pais', 'country']),
+            'tipo_papel': find_header_index(headers, ['tipo papel', 'tipo de papel']),
+            'owner': find_header_index(headers, ['owner', 'responsavel', 'proprietario']),
+            'ger_comercial': find_header_index(headers, ['ger comercial', 'gerente comercial', 'gerencial', 'comercial']),
+            'pratica': find_header_index(headers, ['pratica', 'pratica']),
+            'produto': find_header_index(headers, ['produto']),
+            'cliente': find_header_index(headers, ['cliente']),
+            'subcliente': find_header_index(headers, ['subcliente']),
+            'id_oportunidade': find_header_index(headers, ['id oportunidade', 'id_oportunidade', 'oportunidade', 'id']),
+            'descricao_oportunidade': find_header_index(headers, ['descricao oportunidade', 'descricao', 'descricao de oportunidade', 'descricao oportunidade']),
+            'status_comercial': find_header_index(headers, ['status comercial', 'status_comercial', 'status']),
+            'moeda': find_header_index(headers, ['moeda']),
+            'data_inicio_contrato': find_header_index(headers, ['data inicio contrato', 'data inicio', 'inicio contrato']),
+            'data_fim_contrato': find_header_index(headers, ['data fim contrato', 'data fim', 'fim contrato']),
+        }
+
+        if idx_map['chave_ek'] is None:
+            print('Aviso: chave_ek não encontrada por cabeçalho, usando fallback na coluna 140')
+            idx_map['chave_ek'] = 140
+        if idx_map['cr'] is None:
+            print('Aviso: CR não encontrada por cabeçalho, usando fallback na coluna 24')
+            idx_map['cr'] = 24
+
         lidas = 0
         carregadas = 0
         ignoradas = 0
-        
-        for i, row in enumerate(sheet.iter_rows(min_row=4, values_only=True), start=4):
-            # A chave única está na coluna 141 (EK) ou formamos ela
-            chave_ek = row[140] if len(row) > 140 and row[140] else None
+        ignored_details = []
+        cr_4000020240 = {
+            'found': False,
+            'with_key': False,
+            'row': None,
+            'chave_ek': None,
+        }
+
+        for i, row in enumerate(sheet.iter_rows(min_row=header_row_idx + 1, values_only=True), start=header_row_idx + 1):
+            cr_raw = get_cell(row, idx_map['cr'])
+            cr = str(cr_raw).split('-')[0].strip() if cr_raw else None
+
+            if cr == '4000020240':
+                cr_4000020240['found'] = True
+                cr_4000020240['chave_ek'] = get_cell(row, idx_map['chave_ek'])
+                cr_4000020240['row'] = i
+                if cr_4000020240['chave_ek']:
+                    cr_4000020240['with_key'] = True
+
+            chave_ek = get_cell(row, idx_map['chave_ek'])
             if not chave_ek:
                 ignoradas += 1
+                ignored_details.append(f"Linha {i} ignorada sem chave_ek (CR={cr})")
                 continue
-                
+
             lidas += 1
-            
-            # Mapeamento Básico Identificado (Ajustar com testes reais se colunas variarem)
+
             try:
                 opp = {
-                    "chave_ek": str(chave_ek).strip(),
-                    "data_criacao": parse_date(row[0]),
-                    "banco": str(row[1]).strip() if row[1] else None,
-                    "pais": str(row[3]).strip() if row[3] else None,
-                    "tipo_papel": str(row[4]).strip() if row[4] else None,
-                    "owner": str(row[5]).strip() if row[5] else None,
-                    "ger_comercial": str(row[6]).strip() if row[6] else None,
-                    "pratica": str(row[10]).strip() if row[10] else None,
-                    "produto": str(row[11]).strip() if row[11] else None,
-                    "cliente": str(row[13]).strip() if row[13] else None,
-                    "subcliente": str(row[14]).strip() if row[14] else None,
-                    "id_oportunidade": str(row[17]).strip() if row[17] else None,
-                    "descricao_oportunidade": str(row[18]).strip() if row[18] else None,
-                    "status_comercial": str(row[19]).strip() if row[19] else None,
-                    "cr": str(row[24]).split('-')[0].strip() if len(row)>24 and row[24] else None,
-                    "moeda": str(row[26]).strip() if len(row)>26 and row[26] else None,
-                    "data_inicio_contrato": parse_date(row[29]) if len(row)>29 else None,
-                    "data_fim_contrato": parse_date(row[30]) if len(row)>30 else None,
+                    'chave_ek': str(chave_ek).strip(),
+                    'data_criacao': parse_date(get_cell(row, idx_map['data_criacao'], row[0] if len(row) > 0 else None)),
+                    'banco': str(get_cell(row, idx_map['banco'], row[1] if len(row) > 1 else None)).strip() if get_cell(row, idx_map['banco'], row[1] if len(row) > 1 else None) else None,
+                    'pais': str(get_cell(row, idx_map['pais'], row[3] if len(row) > 3 else None)).strip() if get_cell(row, idx_map['pais'], row[3] if len(row) > 3 else None) else None,
+                    'tipo_papel': str(get_cell(row, idx_map['tipo_papel'], row[4] if len(row) > 4 else None)).strip() if get_cell(row, idx_map['tipo_papel'], row[4] if len(row) > 4 else None) else None,
+                    'owner': str(get_cell(row, idx_map['owner'], row[5] if len(row) > 5 else None)).strip() if get_cell(row, idx_map['owner'], row[5] if len(row) > 5 else None) else None,
+                    'ger_comercial': str(get_cell(row, idx_map['ger_comercial'], row[6] if len(row) > 6 else None)).strip() if get_cell(row, idx_map['ger_comercial'], row[6] if len(row) > 6 else None) else None,
+                    'pratica': str(get_cell(row, idx_map['pratica'], row[10] if len(row) > 10 else None)).strip() if get_cell(row, idx_map['pratica'], row[10] if len(row) > 10 else None) else None,
+                    'produto': str(get_cell(row, idx_map['produto'], row[11] if len(row) > 11 else None)).strip() if get_cell(row, idx_map['produto'], row[11] if len(row) > 11 else None) else None,
+                    'cliente': str(get_cell(row, idx_map['cliente'], row[13] if len(row) > 13 else None)).strip() if get_cell(row, idx_map['cliente'], row[13] if len(row) > 13 else None) else None,
+                    'subcliente': str(get_cell(row, idx_map['subcliente'], row[14] if len(row) > 14 else None)).strip() if get_cell(row, idx_map['subcliente'], row[14] if len(row) > 14 else None) else None,
+                    'id_oportunidade': str(get_cell(row, idx_map['id_oportunidade'], row[17] if len(row) > 17 else None)).strip() if get_cell(row, idx_map['id_oportunidade'], row[17] if len(row) > 17 else None) else None,
+                    'descricao_oportunidade': str(get_cell(row, idx_map['descricao_oportunidade'], row[18] if len(row) > 18 else None)).strip() if get_cell(row, idx_map['descricao_oportunidade'], row[18] if len(row) > 18 else None) else None,
+                    'status_comercial': str(get_cell(row, idx_map['status_comercial'], row[19] if len(row) > 19 else None)).strip() if get_cell(row, idx_map['status_comercial'], row[19] if len(row) > 19 else None) else None,
+                    'cr': cr,
+                    'moeda': str(get_cell(row, idx_map['moeda'], row[26] if len(row) > 26 else None)).strip() if get_cell(row, idx_map['moeda'], row[26] if len(row) > 26 else None) else None,
+                    'data_inicio_contrato': parse_date(get_cell(row, idx_map['data_inicio_contrato'], row[29] if len(row) > 29 else None)),
+                    'data_fim_contrato': parse_date(get_cell(row, idx_map['data_fim_contrato'], row[30] if len(row) > 30 else None)),
                 }
-                
-                # Inserir Oportunidade
+
                 cursor.execute('''INSERT OR REPLACE INTO forecast_oportunidades 
                                (chave_ek, data_criacao, banco, pais, tipo_papel, owner, ger_comercial,
                                 pratica, produto, cliente, subcliente, id_oportunidade, descricao_oportunidade,
@@ -225,36 +307,48 @@ def run_etl():
                                 opp['produto'], opp['cliente'], opp['subcliente'], opp['id_oportunidade'],
                                 opp['descricao_oportunidade'], opp['status_comercial'], opp['cr'], opp['moeda'],
                                 opp['data_inicio_contrato'], opp['data_fim_contrato'], agora, XLSX_PATH))
-                
-                # Deletar valores antigos
+
                 cursor.execute('DELETE FROM forecast_valores WHERE chave_ek = ?', (opp['chave_ek'],))
-                
-                # 2025: RL (34 a 45) e RB (60 a 71)
+
                 meses = ['01','02','03','04','05','06','07','08','09','10','11','12']
                 for m_idx, mes in enumerate(meses):
-                    v_rl_25 = parse_float(row[34 + m_idx]) if len(row) > 45 else 0.0
-                    v_rb_25 = parse_float(row[60 + m_idx]) if len(row) > 71 else 0.0
-                    
+                    v_rl_25 = parse_float(get_cell(row, 34 + m_idx)) if len(row) > 34 + m_idx else 0.0
+                    v_rb_25 = parse_float(get_cell(row, 60 + m_idx)) if len(row) > 60 + m_idx else 0.0
                     if v_rl_25 != 0 or v_rb_25 != 0:
                         cursor.execute('INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb, semana_carga) VALUES (?,?,?,?,?,?)',
                                        (opp['chave_ek'], 'Forecast', f'2025-{mes}', v_rl_25, v_rb_25, agora))
 
-                # 2026: RL nas colunas AV:BG (índice 47 a 58) e RB nas colunas DV:EG (índice 125 a 136)
                 for m_idx, mes in enumerate(meses):
-                    v_rl_26 = parse_float(row[47 + m_idx]) if len(row) > 58 else 0.0
-                    v_rb_26 = parse_float(row[125 + m_idx]) if len(row) > 136 else 0.0
-                    
+                    v_rl_26 = parse_float(get_cell(row, 47 + m_idx)) if len(row) > 47 + m_idx else 0.0
+                    v_rb_26 = parse_float(get_cell(row, 125 + m_idx)) if len(row) > 125 + m_idx else 0.0
                     if v_rl_26 != 0 or v_rb_26 != 0:
                         cursor.execute('INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb, semana_carga) VALUES (?,?,?,?,?,?)',
                                        (opp['chave_ek'], 'Forecast', f'2026-{mes}', v_rl_26, v_rb_26, agora))
-                
+
                 carregadas += 1
             except Exception as e:
-                print(f"Erro ao parsear linha {i}: {e}")
+                ignored_details.append(f"Linha {i} parse falhou: {e}")
                 ignoradas += 1
+                continue
 
+        if ignored_details:
+            print('Linhas ignoradas detalhadas:')
+            for msg in ignored_details[:30]:
+                print(' -', msg)
+            if len(ignored_details) > 30:
+                print(f' - ... mais {len(ignored_details) - 30} linhas ignoradas')
+
+        if cr_4000020240['found']:
+            if cr_4000020240['with_key']:
+                print(f"CR 4000020240 encontrado na linha {cr_4000020240['row']} e possui chave_ek {cr_4000020240['chave_ek']}")
+            else:
+                print(f"CR 4000020240 encontrado na linha {cr_4000020240['row']}, mas sem chave_ek")
+        else:
+            print('CR 4000020240 não encontrado no source FORECAST.')
+
+        message = f"Carga finalizada com sucesso; cr_4000020240_found={cr_4000020240['found']}; cr_4000020240_with_key={cr_4000020240['with_key']}"
         cursor.execute("INSERT INTO etl_log (arquivo, aba, linhas_lidas, linhas_carregadas, linhas_ignoradas, status, mensagem, executado_em) VALUES (?,?,?,?,?,?,?,?)",
-                       (XLSX_PATH, "FORECAST", lidas, carregadas, ignoradas, "SUCESSO", "Carga finalizada com sucesso", agora))
+                       (XLSX_PATH, "FORECAST", lidas, carregadas, ignoradas, "SUCESSO", message, agora))
         conn.commit()
         print(f"ETL Concluído. Lidas: {lidas}, Carregadas: {carregadas}, Ignoradas: {ignoradas}")
 

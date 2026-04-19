@@ -393,3 +393,84 @@ table tr:last-child td {
 .btn-sm:hover {
     background-color: rgba(59, 130, 246, 0.1);
 }
+
+.upload-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  max-width: 720px;
+  margin: 2rem auto;
+}
+.upload-zone {
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--border-radius);
+  padding: 3rem 2rem;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color .2s, background-color .2s;
+}
+.upload-zone:hover {
+  border-color: var(--accent-green);
+  background: rgba(5, 150, 105, 0.03);
+}
+.upload-zone.drag-over {
+  border-color: var(--accent-green);
+  background: rgba(5, 150, 105, 0.08);
+}
+.upload-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent-green);
+}
+.upload-zone button {
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-weight: 600;
+  cursor: pointer;
+}
+.upload-zone button:hover {
+  text-decoration: underline;
+}
+.etapa-item {
+  display: grid;
+  grid-template-columns: 20px 1fr 200px 40px;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+}
+.etapa-bar-bg {
+  height: 4px;
+  background: var(--border-subtle);
+  border-radius: 2px;
+}
+.etapa-bar-fill {
+  height: 100%;
+  background: var(--accent-green);
+  border-radius: 2px;
+  transition: width .4s ease;
+}
+.etapa-pct {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+}
+.progresso-log {
+  margin-top: 1rem;
+  background: var(--bg-dark);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  max-height: 160px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.progresso-log p {
+  margin: 2px 0;
+}

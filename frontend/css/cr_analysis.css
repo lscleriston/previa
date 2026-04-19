@@ -153,6 +153,14 @@
     padding: 3px 0;
 }
 
+.comparativo-table tr.compare-row td:first-child {
+    padding-left: 18px;
+}
+
+.comparativo-table tr.subtotal td:first-child {
+    padding-left: 0;
+}
+
 .comparativo-table tr.subtotal td {
     font-size: 12.5px;
 }
