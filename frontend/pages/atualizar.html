@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light-executive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Dados</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Forecast Pro</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="cr_analysis.html">Análise por CR</a>
+                <a href="atualizar.html" class="active">Atualizar Dados</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Atualizar base de dados</h1>
+                    <p class="subtitle">Selecione o arquivo da Prévia para reprocessar todos os dados.</p>
+                </div>
+            </header>
+
+            <section class="upload-card">
+                <h2>Atualizar base de dados</h2>
+                <p>Selecione o arquivo .xlsx da Prévia para reprocessar todos os dados.</p>
+
+                <div class="upload-zone" id="upload-zone">
+                    <input type="file" id="file-input" accept=".xlsx" hidden>
+                    <div class="upload-icon">↑</div>
+                    <p>Arraste o arquivo aqui ou <button type="button" onclick="document.getElementById('file-input').click()">clique para selecionar</button></p>
+                    <p class="upload-hint">Somente arquivos .xlsx · O banco atual será limpo antes da carga</p>
+                </div>
+
+                <div id="file-preview" style="display:none; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                    <span id="file-name"></span>
+                    <button id="btn-iniciar" class="btn-primary" type="button">Iniciar carga</button>
+                </div>
+
+                <div id="progresso" style="display:none; margin-top: 1rem;">
+                    <div class="progresso-etapas" id="etapas-container"></div>
+                    <div class="progresso-log" id="log-container"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/app.js?v=2"></script>
+    <script src="/js/atualizar.js?v=2"></script>
+</body>
+</html>

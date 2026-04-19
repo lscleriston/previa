@@ -212,12 +212,17 @@ def get_resumo_por_cr(filtros):
 
         ajustes = {}
         # Créditos (cr_credito)
-        q_credito = "SELECT cr_credito as cr, resultado, SUM(incremento_credito) as val FROM ajustamentos_gerencia WHERE cr_credito IS NOT NULL"
+        q_credito = (
+            "SELECT COALESCE(d.Cod_Cr, a.cr_credito) as cr, a.resultado, SUM(a.incremento_credito) as val "
+            "FROM ajustamentos_gerencia a "
+            "LEFT JOIN dim_cr d ON d.CR_SAP = a.cr_credito OR d.Cod_Cr = a.cr_credito "
+            "WHERE a.cr_credito IS NOT NULL"
+        )
         p_credito = []
         if mes_filter:
-            q_credito += " AND mes_ref = ?"
+            q_credito += " AND a.mes_ref = ?"
             p_credito.append(mes_filter)
-        q_credito += " GROUP BY cr_credito, resultado"
+        q_credito += " GROUP BY COALESCE(d.Cod_Cr, a.cr_credito), a.resultado"
 
         for row in cursor.execute(q_credito, p_credito).fetchall():
             cr = row['cr']
@@ -228,12 +233,17 @@ def get_resumo_por_cr(filtros):
             ajustes[cr][row['resultado']] += row['val']
 
         # Débitos (cr_debito)
-        q_debito = "SELECT cr_debito as cr, resultado, SUM(incremento_debito) as val FROM ajustamentos_gerencia WHERE cr_debito IS NOT NULL"
+        q_debito = (
+            "SELECT COALESCE(d.Cod_Cr, a.cr_debito) as cr, a.resultado, SUM(a.incremento_debito) as val "
+            "FROM ajustamentos_gerencia a "
+            "LEFT JOIN dim_cr d ON d.CR_SAP = a.cr_debito OR d.Cod_Cr = a.cr_debito "
+            "WHERE a.cr_debito IS NOT NULL"
+        )
         p_debito = []
         if mes_filter:
-            q_debito += " AND mes_ref = ?"
+            q_debito += " AND a.mes_ref = ?"
             p_debito.append(mes_filter)
-        q_debito += " GROUP BY cr_debito, resultado"
+        q_debito += " GROUP BY COALESCE(d.Cod_Cr, a.cr_debito), a.resultado"
 
         for row in cursor.execute(q_debito, p_debito).fetchall():
             cr = row['cr']
@@ -241,7 +251,26 @@ def get_resumo_por_cr(filtros):
                 ajustes[cr] = {}
             if row['resultado'] not in ajustes[cr]:
                 ajustes[cr][row['resultado']] = 0.0
-            ajustes[cr][row['resultado']] += row['val']
+            ajustes[cr][row['resultado']] -= row['val']
+
+        # Rateio automático
+        q_rateio = (
+            "SELECT COALESCE(d.Cod_Cr, r.cr) as cr, SUM(r.rateio) as val "
+            "FROM rateio_automatico r "
+            "LEFT JOIN dim_cr d ON d.CR_SAP = r.cr OR d.Cod_Cr = r.cr "
+            "WHERE r.cr IS NOT NULL"
+        )
+        p_rateio = []
+        if mes_filter:
+            q_rateio += " AND r.mes_ref = ?"
+            p_rateio.append(mes_filter)
+        q_rateio += " GROUP BY COALESCE(d.Cod_Cr, r.cr)"
+
+        for row in cursor.execute(q_rateio, p_rateio).fetchall():
+            cr = row['cr']
+            if cr not in ajustes:
+                ajustes[cr] = {}
+            ajustes[cr]['Rateio'] = ajustes[cr].get('Rateio', 0.0) + row['val']
 
         for cr in crs:
             cr_code = cr['cr']
@@ -267,7 +296,9 @@ def get_resumo_por_cr(filtros):
                             "categoria": categoria,
                             "valor": valor
                         })
-            cr['pessoal_previa'] = folha_previas.get(cr_sap, folha_previas.get(cr_code, 0.0))
+            cr['pessoal_previa'] = (
+                folha_previas.get(cr_sap, 0.0) + folha_previas.get(cr_code, 0.0)
+            )
 
         return crs
 
@@ -303,8 +334,17 @@ def get_lancamentos_por_cr_categoria(cr, categoria, mes_ref=None):
     with get_db_connection() as conn:
         cursor = conn.cursor()
         if categoria == 'Pessoal' or categoria == 'pessoal':
-            query = "SELECT cliente as descricao, fonte as origem, valor FROM previa_folha_th WHERE cr = ?"
-            params = [cr]
+            code_set = {cr}
+            cursor.execute("SELECT CR_SAP, Cod_Cr FROM dim_cr WHERE CR_SAP = ? OR Cod_Cr = ?", (cr, cr))
+            for row in cursor.fetchall():
+                if row['CR_SAP']:
+                    code_set.add(row['CR_SAP'])
+                if row['Cod_Cr']:
+                    code_set.add(row['Cod_Cr'])
+
+            placeholders = ','.join(['?'] * len(code_set))
+            query = f"SELECT cliente as descricao, fonte as origem, valor, cr FROM previa_folha_th WHERE cr IN ({placeholders})"
+            params = list(code_set)
             if mes_ref:
                 query += " AND mes_ref = ?"
                 params.append(mes_ref)
@@ -312,37 +352,74 @@ def get_lancamentos_por_cr_categoria(cr, categoria, mes_ref=None):
             return [dict(row) for row in cursor.fetchall()]
 
         resultado = slug_to_resultado.get(categoria, categoria)
+
+        code_set = {cr}
+        cursor.execute("SELECT CR_SAP, Cod_Cr FROM dim_cr WHERE CR_SAP = ? OR Cod_Cr = ?", (cr, cr))
+        for row in cursor.fetchall():
+            if row['CR_SAP']:
+                code_set.add(row['CR_SAP'])
+            if row['Cod_Cr']:
+                code_set.add(row['Cod_Cr'])
+
+        code_values = list(code_set)
+        placeholders = ','.join(['?'] * len(code_values))
         query = (
-            "SELECT COALESCE(NULLIF(justificativa, ''), resultado) AS descricao,"
-            " COALESCE(origin.Des_CR, origin.CR_SAP, origin.Cod_Cr, a.orig_cr, a.desc_cr_envio, a.desc_cr_destino, '') AS origem,"
-            " a.aba_origem AS aba_origem,"
-            " CASE"
-            " WHEN a.cr_credito = ? THEN ABS(a.incremento_credito)"
-            " WHEN a.cr_debito = ? THEN -ABS(a.incremento_debito)"
-            " WHEN a.cr_envio = ? THEN ABS(a.incremento_credito)"
-            " WHEN a.cr_destino = ? THEN -ABS(a.incremento_debito)"
-            " ELSE COALESCE(a.incremento_credito, a.incremento_debito, 0) END AS valor"
-            " FROM ("
-            " SELECT *, CASE"
-            " WHEN cr_credito = ? THEN COALESCE(cr_debito, cr_destino, cr_envio, '')"
-            " WHEN cr_debito = ? THEN COALESCE(cr_credito, cr_envio, cr_destino, '')"
-            " WHEN cr_envio = ? THEN COALESCE(cr_destino, cr_credito, cr_debito, '')"
-            " WHEN cr_destino = ? THEN COALESCE(cr_envio, cr_credito, cr_debito, '')"
-            " ELSE COALESCE(cr_envio, cr_destino, cr_credito, cr_debito, '') END AS orig_cr"
-            " FROM ajustamentos_gerencia"
-            " ) AS a"
-            " LEFT JOIN dim_cr origin ON (origin.CR_SAP = a.orig_cr OR origin.Cod_Cr = a.orig_cr)"
-            " WHERE LOWER(TRIM(a.resultado)) = LOWER(TRIM(?))"
-            " AND (a.cr_credito = ? OR a.cr_debito = ? OR a.cr_envio = ? OR a.cr_destino = ?)")
-        params = [
-            cr, cr, cr, cr,
-            cr, cr, cr, cr,
-            resultado,
-            cr, cr, cr, cr
-        ]
+            f"SELECT * FROM ajustamentos_gerencia "
+            f"WHERE LOWER(TRIM(resultado)) = LOWER(TRIM(?)) "
+            f"AND (cr_credito IN ({placeholders}) OR cr_debito IN ({placeholders}) "
+            f"OR cr_envio IN ({placeholders}) OR cr_destino IN ({placeholders}))"
+        )
+        params = [resultado] + code_values * 4
         if mes_ref:
-            query += " AND a.mes_ref = ?"
+            query += " AND mes_ref = ?"
             params.append(mes_ref)
 
-        cursor.execute(query, params)
-        return [dict(row) for row in cursor.fetchall()]
+        rows = cursor.execute(query, params).fetchall()
+        results = []
+        for row in rows:
+            valor = 0.0
+            if row['cr_credito'] in code_set:
+                valor = abs(row['incremento_credito'] or 0)
+            elif row['cr_debito'] in code_set:
+                valor = -abs(row['incremento_debito'] or 0)
+            elif row['cr_envio'] in code_set:
+                valor = abs(row['incremento_credito'] or 0)
+            elif row['cr_destino'] in code_set:
+                valor = -abs(row['incremento_debito'] or 0)
+            else:
+                valor = abs(row['incremento_credito'] or row['incremento_debito'] or 0)
+
+            origem = row['desc_cr_envio'] or row['desc_cr_destino'] or row['resultado']
+            results.append({
+                'descricao': row['justificativa'] or row['resultado'],
+                'origem': origem,
+                'descricao_cr_envio': row['desc_cr_envio'],
+                'responsavel_cr_envio': row['gestor_cr_envio'],
+                'aba_origem': row['aba_origem'],
+                'valor': valor
+            })
+
+        if resultado.lower() == 'rateio':
+            placeholders = ','.join(['?'] * len(code_values))
+            query_rateio = (
+                f"SELECT cr, rateio, cr_envio, desc_cr_envio, gestor_cr_envio, cliente, rl_rateio, descricao, aba_origem "
+                f"FROM rateio_automatico WHERE cr IN ({placeholders})"
+            )
+            params_rateio = code_values[:]
+            if mes_ref:
+                query_rateio += " AND mes_ref = ?"
+                params_rateio.append(mes_ref)
+            rateio_rows = cursor.execute(query_rateio, params_rateio).fetchall()
+            for row in rateio_rows:
+                descricao = row['descricao'] or row['cliente'] or 'Rateio'
+                origem = row['desc_cr_envio'] or row['descricao']
+                results.append({
+                    'descricao': descricao,
+                    'origem': origem,
+                    'descricao_cr_envio': row['desc_cr_envio'],
+                    'responsavel_cr_envio': row['gestor_cr_envio'],
+                    'aba_origem': row['aba_origem'],
+                    'valor': row['rateio'] or 0
+                })
+
+        return results

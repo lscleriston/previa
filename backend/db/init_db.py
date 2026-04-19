@@ -91,6 +91,20 @@ def init_db():
         fonte TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS rateio_automatico (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cr TEXT,
+        mes_ref TEXT,
+        rateio REAL,
+        cr_envio TEXT,
+        desc_cr_envio TEXT,
+        gestor_cr_envio TEXT,
+        cliente TEXT,
+        rl_rateio TEXT,
+        descricao TEXT,
+        aba_origem TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS dim_cr (
         Cod_Cr TEXT PRIMARY KEY,
         CR_SAP TEXT UNIQUE,
