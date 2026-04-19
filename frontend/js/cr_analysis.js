@@ -1,4 +1,6 @@
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://127.0.0.1:8001/api'
+    : 'http://backend:8000/api';
 let tableData = [];
 const expandedCRs = new Set();
 
@@ -90,11 +92,11 @@ function processItem(item) {
     flat.mc_orcado = getOrc('Margem de Contribuição');
     flat.mc_pct_orcado = getOrc('MC %') * 100;
 
-    // For previa, preserve backend values if present; otherwise fallback to 0 or approximations
-    flat.pessoal_previa = item.pessoal_previa ?? 0;
-    flat.custo_direto_previa = item.custo_direto_previa ?? 0;
-    flat.rateio_previa = item.rateio_previa ?? 0;
-    flat.recuperacao_previa = item.recuperacao_previa ?? 0;
+    // For previa, preserve backend values if present; otherwise leave undefined so fallbacks can apply.
+    flat.pessoal_previa = item.pessoal_previa;
+    flat.custo_direto_previa = item.custo_direto_previa;
+    flat.rateio_previa = item.rateio_previa;
+    flat.recuperacao_previa = item.recuperacao_previa;
     flat.mc_previa = item.mc_previa;
     flat.mc_pct_previa = item.mc_pct_previa;
 
@@ -220,8 +222,17 @@ function renderTable() {
 
         const { mc_pct_orcado, mc_pct_previa } = deriveMcPercent(item);
         const desvio = mc_pct_previa - mc_pct_orcado;
-        const pct = mc_pct_orcado > 0 ? (desvio / mc_pct_orcado) * 100 : 0;
-        const atingimento = mc_pct_orcado > 0 ? (mc_pct_previa / mc_pct_orcado) * 100 : (mc_pct_previa > 0 ? 100 : 0);
+        const pct = mc_pct_orcado > 0
+            ? ((desvio / mc_pct_orcado) * 100)
+            : null;
+        const pctDisplay = pct !== null ? (pct > 0 ? '+' : '') + pct.toFixed(1) + '%' : '—';
+
+        const atingimento = mc_pct_orcado > 0
+            ? ((mc_pct_previa / mc_pct_orcado) * 100)
+            : null;
+        const barWidth = atingimento !== null ? Math.min(Math.max(atingimento, 0), 100) : 0;
+        const barColor = atingimento >= 100 ? '#15803D' : atingimento >= 80 ? '#B45309' : '#BE123C';
+        const atingDisplay = atingimento !== null ? atingimento.toFixed(0) + '%' : '—';
 
         let desvioClass = '';
         if (desvio > 0) desvioClass = 'val-pos';
@@ -229,13 +240,10 @@ function renderTable() {
 
         const mcPrevColorClass = mc_pct_previa >= mc_pct_orcado ? 'val-pos' : 'val-neg';
 
-        let pctHtml = `${pct > 0 ? '+' : ''}${pct.toFixed(1)}%`;
-        if (Math.abs(pct) < 5 && mc_pct_orcado > 0) {
+        let pctHtml = pctDisplay;
+        if (pct !== null && Math.abs(pct) < 5 && mc_pct_orcado > 0) {
             pctHtml = `<span class="badge-warning">${pctHtml}</span>`;
         }
-
-        const barColor = atingimento >= 100 ? '#10B981' : atingimento >= 80 ? '#F59E0B' : '#EF4444';
-        const barWidth = Math.max(0, Math.min(atingimento, 100)).toFixed(0);
 
         const isExpanded = expandedCRs.has(item.cr);
         const icon = isExpanded ? '▼' : '▶';
@@ -252,10 +260,11 @@ function renderTable() {
             <td class="col-num">${pctHtml}</td>
             <td class="col-num">
                 <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                    <span style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2px;">${atingimento.toFixed(0)}%</span>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2px;">${atingDisplay}</span>
+                    ${atingimento !== null && atingimento >= 0 ? `
                     <div class="bar-container" style="width: 60px;">
                         <div class="bar-fill" style="width: ${barWidth}%; background: ${barColor};"></div>
-                    </div>
+                    </div>` : ''}
                 </div>
             </td>
         `;
@@ -345,48 +354,51 @@ function renderDRE(item) {
     const ded_previa = rb_previa - rl_previa;
 
     const lineValues = [
-        { label: 'Receita Bruta', orc: rb_orcado, pre: rb_previa, slug: categorySlugs['Receita Bruta'], apiKey: 'Receita Bruta', isPos: true, clickable: rb_previa !== 0 },
-        { label: '(-) Deduções', orc: ded_orcado, pre: ded_previa, slug: categorySlugs['Deduções'], apiKey: 'Deduções', isPos: false, clickable: ded_previa !== 0 },
-        { label: '= Receita Líquida', orc: rl_orcado, pre: rl_previa, subtotal: 'rl', slug: categorySlugs['Receita Líquida'], isPos: true },
-        { label: '(-) Pessoal', orc: item.pessoal_orcado ?? getOrcado('Pessoal'), pre: item.pessoal_previa ?? getPrevia('Pessoal'), slug: categorySlugs['Pessoal'], apiKey: 'Pessoal', isPos: false, clickable: (item.pessoal_previa ?? getPrevia('Pessoal')) !== 0 },
-        { label: '(-) Aluguéis', orc: getOrcado('Aluguéis'), pre: getPrevia('Aluguéis'), slug: categorySlugs['Aluguéis'], apiKey: 'Aluguéis', isPos: false, clickable: getPrevia('Aluguéis') !== 0 },
-        { label: '(-) Despesas Gerais', orc: getOrcado('Despesas Gerais'), pre: getPrevia('Despesas Gerais'), slug: categorySlugs['Despesas Gerais'], apiKey: 'Despesas Gerais', isPos: false, clickable: getPrevia('Despesas Gerais') !== 0 },
-        { label: '(-) Frota', orc: getOrcado('Frota'), pre: getPrevia('Frota'), slug: categorySlugs['Frota'], apiKey: 'Frota', isPos: false, clickable: getPrevia('Frota') !== 0 },
-        { label: '(-) Impostos, Taxas e Multas', orc: getOrcado('Impostos, Taxas e Multas'), pre: getPrevia('Impostos, Taxas e Multas'), slug: categorySlugs['Impostos, Taxas e Multas'], apiKey: 'Impostos, Taxas e Multas', isPos: false, clickable: getPrevia('Impostos, Taxas e Multas') !== 0 },
-        { label: '(-) Manutenção da Operação', orc: getOrcado('Manutenção da Operação'), pre: getPrevia('Manutenção da Operação'), slug: categorySlugs['Manutenção da Operação'], apiKey: 'Manutenção da Operação', isPos: false, clickable: getPrevia('Manutenção da Operação') !== 0 },
-        { label: '(-) Manutenção de Máquinas', orc: getOrcado('Manutenção de Máquinas'), pre: getPrevia('Manutenção de Máquinas'), slug: categorySlugs['Manutenção de Máquinas'], apiKey: 'Manutenção de Máquinas', isPos: false, clickable: getPrevia('Manutenção de Máquinas') !== 0 },
-        { label: '(-) Manutenção Predial', orc: getOrcado('Manutenção Predial'), pre: getPrevia('Manutenção Predial'), slug: categorySlugs['Manutenção Predial'], apiKey: 'Manutenção Predial', isPos: false, clickable: getPrevia('Manutenção Predial') !== 0 },
-        { label: '(-) Marketing', orc: getOrcado('Marketing'), pre: getPrevia('Marketing'), slug: categorySlugs['Marketing'], apiKey: 'Marketing', isPos: false, clickable: getPrevia('Marketing') !== 0 },
-        { label: '(-) Outros', orc: getOrcado('Outros'), pre: getPrevia('Outros'), slug: categorySlugs['Outros'], apiKey: 'Outros', isPos: false, clickable: getPrevia('Outros') !== 0 },
-        { label: '(-) Pontuais', orc: getOrcado('Pontuais'), pre: getPrevia('Pontuais'), slug: categorySlugs['Pontuais'], apiKey: 'Pontuais', isPos: false, clickable: getPrevia('Pontuais') !== 0 },
-        { label: '(-) Seguros', orc: getOrcado('Seguros'), pre: getPrevia('Seguros'), slug: categorySlugs['Seguros'], apiKey: 'Seguros', isPos: false, clickable: getPrevia('Seguros') !== 0 },
-        { label: '(-) Serviços de Terceiros', orc: getOrcado('Serviços de Terceiros'), pre: getPrevia('Serviços de Terceiros'), slug: categorySlugs['Serviços de Terceiros'], apiKey: 'Serviços de Terceiros', isPos: false, clickable: getPrevia('Serviços de Terceiros') !== 0 },
-        { label: '(-) Telecomunicações', orc: getOrcado('Telecomunicações'), pre: getPrevia('Telecomunicações'), slug: categorySlugs['Telecomunicações'], apiKey: 'Telecomunicações', isPos: false, clickable: getPrevia('Telecomunicações') !== 0 },
-        { label: '(-) TI', orc: getOrcado('TI'), pre: getPrevia('TI'), slug: categorySlugs['TI'], apiKey: 'TI', isPos: false, clickable: getPrevia('TI') !== 0 },
-        { label: '(-) Treinamentos', orc: getOrcado('Treinamentos'), pre: getPrevia('Treinamentos'), slug: categorySlugs['Treinamentos'], apiKey: 'Treinamentos', isPos: false, clickable: getPrevia('Treinamentos') !== 0 },
-        { label: '(-) Utilidades', orc: getOrcado('Utilidades'), pre: getPrevia('Utilidades'), slug: categorySlugs['Utilidades'], apiKey: 'Utilidades', isPos: false, clickable: getPrevia('Utilidades') !== 0 },
-        { label: '(-) Viagens', orc: getOrcado('Viagens'), pre: getPrevia('Viagens'), slug: categorySlugs['Viagens'], apiKey: 'Viagens', isPos: false, clickable: getPrevia('Viagens') !== 0 },
-        { label: '(-) Rateios', orc: item.rateio_orcado ?? getOrcado('Rateio'), pre: item.rateio_previa ?? getPrevia('Rateio'), slug: categorySlugs['Rateio'], apiKey: 'Rateio', isPos: false, clickable: (item.rateio_previa ?? getPrevia('Rateio')) !== 0 },
-        { label: '(+) Rec. Outros Gastos', orc: item.recuperacao_orcado ?? getOrcado('Recuperação Outros Gastos'), pre: item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos'), slug: categorySlugs['Recuperação Outros Gastos'], apiKey: 'Recuperação Outros Gastos', isPos: true, clickable: (item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos')) !== 0 },
-        { label: '(+) Rec. Pessoal', orc: getOrcado('Recuperação Pessoal'), pre: getPrevia('Recuperação Pessoal'), slug: categorySlugs['Recuperação Pessoal'], apiKey: 'Recuperação Pessoal', isPos: true, clickable: getPrevia('Recuperação Pessoal') !== 0 }
+        { label: 'Receita Bruta', orc: rb_orcado, pre: rb_previa, slug: categorySlugs['Receita Bruta'], apiKey: 'Receita Bruta', isPos: true, type: 'receita', clickable: rb_previa !== 0 },
+        { label: '(-) Deduções', orc: ded_orcado, pre: ded_previa, slug: categorySlugs['Deduções'], apiKey: 'Deduções', isPos: false, type: 'receita', clickable: ded_previa !== 0 },
+        { label: '= Receita Líquida', orc: rl_orcado, pre: rl_previa, subtotal: 'rl', slug: categorySlugs['Receita Líquida'], isPos: true, type: 'receita' },
+        { label: '(-) Pessoal', orc: item.pessoal_orcado ?? getOrcado('Pessoal'), pre: item.pessoal_previa ?? getPrevia('Pessoal'), slug: categorySlugs['Pessoal'], apiKey: 'Pessoal', isPos: false, type: 'custo', clickable: (item.pessoal_previa ?? getPrevia('Pessoal')) !== 0 },
+        { label: '(-) Aluguéis', orc: getOrcado('Aluguéis'), pre: getPrevia('Aluguéis'), slug: categorySlugs['Aluguéis'], apiKey: 'Aluguéis', isPos: false, type: 'custo', clickable: getPrevia('Aluguéis') !== 0 },
+        { label: '(-) Despesas Gerais', orc: getOrcado('Despesas Gerais'), pre: getPrevia('Despesas Gerais'), slug: categorySlugs['Despesas Gerais'], apiKey: 'Despesas Gerais', isPos: false, type: 'custo', clickable: getPrevia('Despesas Gerais') !== 0 },
+        { label: '(-) Frota', orc: getOrcado('Frota'), pre: getPrevia('Frota'), slug: categorySlugs['Frota'], apiKey: 'Frota', isPos: false, type: 'custo', clickable: getPrevia('Frota') !== 0 },
+        { label: '(-) Impostos, Taxas e Multas', orc: getOrcado('Impostos, Taxas e Multas'), pre: getPrevia('Impostos, Taxas e Multas'), slug: categorySlugs['Impostos, Taxas e Multas'], apiKey: 'Impostos, Taxas e Multas', isPos: false, type: 'custo', clickable: getPrevia('Impostos, Taxas e Multas') !== 0 },
+        { label: '(-) Manutenção da Operação', orc: getOrcado('Manutenção da Operação'), pre: getPrevia('Manutenção da Operação'), slug: categorySlugs['Manutenção da Operação'], apiKey: 'Manutenção da Operação', isPos: false, type: 'custo', clickable: getPrevia('Manutenção da Operação') !== 0 },
+        { label: '(-) Manutenção de Máquinas', orc: getOrcado('Manutenção de Máquinas'), pre: getPrevia('Manutenção de Máquinas'), slug: categorySlugs['Manutenção de Máquinas'], apiKey: 'Manutenção de Máquinas', isPos: false, type: 'custo', clickable: getPrevia('Manutenção de Máquinas') !== 0 },
+        { label: '(-) Manutenção Predial', orc: getOrcado('Manutenção Predial'), pre: getPrevia('Manutenção Predial'), slug: categorySlugs['Manutenção Predial'], apiKey: 'Manutenção Predial', isPos: false, type: 'custo', clickable: getPrevia('Manutenção Predial') !== 0 },
+        { label: '(-) Marketing', orc: getOrcado('Marketing'), pre: getPrevia('Marketing'), slug: categorySlugs['Marketing'], apiKey: 'Marketing', isPos: false, type: 'custo', clickable: getPrevia('Marketing') !== 0 },
+        { label: '(-) Outros', orc: getOrcado('Outros'), pre: getPrevia('Outros'), slug: categorySlugs['Outros'], apiKey: 'Outros', isPos: false, type: 'custo', clickable: getPrevia('Outros') !== 0 },
+        { label: '(-) Pontuais', orc: getOrcado('Pontuais'), pre: getPrevia('Pontuais'), slug: categorySlugs['Pontuais'], apiKey: 'Pontuais', isPos: false, type: 'custo', clickable: getPrevia('Pontuais') !== 0 },
+        { label: '(-) Seguros', orc: getOrcado('Seguros'), pre: getPrevia('Seguros'), slug: categorySlugs['Seguros'], apiKey: 'Seguros', isPos: false, type: 'custo', clickable: getPrevia('Seguros') !== 0 },
+        { label: '(-) Serviços de Terceiros', orc: getOrcado('Serviços de Terceiros'), pre: getPrevia('Serviços de Terceiros'), slug: categorySlugs['Serviços de Terceiros'], apiKey: 'Serviços de Terceiros', isPos: false, type: 'custo', clickable: getPrevia('Serviços de Terceiros') !== 0 },
+        { label: '(-) Telecomunicações', orc: getOrcado('Telecomunicações'), pre: getPrevia('Telecomunicações'), slug: categorySlugs['Telecomunicações'], apiKey: 'Telecomunicações', isPos: false, type: 'custo', clickable: getPrevia('Telecomunicações') !== 0 },
+        { label: '(-) TI', orc: getOrcado('TI'), pre: getPrevia('TI'), slug: categorySlugs['TI'], apiKey: 'TI', isPos: false, type: 'custo', clickable: getPrevia('TI') !== 0 },
+        { label: '(-) Treinamentos', orc: getOrcado('Treinamentos'), pre: getPrevia('Treinamentos'), slug: categorySlugs['Treinamentos'], apiKey: 'Treinamentos', isPos: false, type: 'custo', clickable: getPrevia('Treinamentos') !== 0 },
+        { label: '(-) Utilidades', orc: getOrcado('Utilidades'), pre: getPrevia('Utilidades'), slug: categorySlugs['Utilidades'], apiKey: 'Utilidades', isPos: false, type: 'custo', clickable: getPrevia('Utilidades') !== 0 },
+        { label: '(-) Viagens', orc: getOrcado('Viagens'), pre: getPrevia('Viagens'), slug: categorySlugs['Viagens'], apiKey: 'Viagens', isPos: false, type: 'custo', clickable: getPrevia('Viagens') !== 0 },
+        { label: '(-) Rateios', orc: item.rateio_orcado ?? getOrcado('Rateio'), pre: item.rateio_previa ?? getPrevia('Rateio'), slug: categorySlugs['Rateio'], apiKey: 'Rateio', isPos: false, type: 'custo', clickable: (item.rateio_previa ?? getPrevia('Rateio')) !== 0 },
+        { label: '(+) Rec. Outros Gastos', orc: item.recuperacao_orcado ?? getOrcado('Recuperação Outros Gastos'), pre: item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos'), slug: categorySlugs['Recuperação Outros Gastos'], apiKey: 'Recuperação Outros Gastos', isPos: true, type: 'receita', clickable: (item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos')) !== 0 },
+        { label: '(+) Rec. Pessoal', orc: getOrcado('Recuperação Pessoal'), pre: getPrevia('Recuperação Pessoal'), slug: categorySlugs['Recuperação Pessoal'], apiKey: 'Recuperação Pessoal', isPos: true, type: 'receita', clickable: getPrevia('Recuperação Pessoal') !== 0 }
     ];
 
-    const costLines = lineValues.filter(line => !line.subtotal && !['Receita Bruta', '(-) Deduções', '= Receita Líquida'].includes(line.label));
-    const costTotalOrcado = costLines.reduce((sum, line) => {
-        return sum + (line.label.startsWith('(+)') ? -line.orc : line.orc);
-    }, 0);
-    const costTotalPrevia = costLines.reduce((sum, line) => {
-        return sum + (line.label.startsWith('(+)') ? -line.pre : line.pre);
-    }, 0);
+    const corDelta = (valor, tipo) => {
+        if (tipo === 'custo') return valor >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+        return valor >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+    };
+
+    const costLines = lineValues.filter(line => !line.subtotal && !['Receita Bruta', '(-) Deduções', '= Receita Líquida'].includes(line.label) && !line.label.startsWith('(+)'));
+    const recoveryLines = lineValues.filter(line => !line.subtotal && line.label.startsWith('(+)'));
+
+    const costTotalOrcado = costLines.reduce((sum, line) => sum + line.orc, 0) + recoveryLines.reduce((sum, line) => sum + line.orc, 0);
+    const costTotalPrevia = costLines.reduce((sum, line) => sum + line.pre, 0) + recoveryLines.reduce((sum, line) => sum + line.pre, 0);
 
     const mc_orcado = item.mc_orcado ?? (rl_orcado + costTotalOrcado);
     const mc_previa = item.mc_previa ?? (rl_previa + costTotalPrevia);
     const mc_pct_orcado = item.mc_pct_orcado ?? 0;
     const mc_pct_previa = item.mc_pct_previa ?? (rl_previa ? (mc_previa / rl_previa) * 100 : 0);
 
-    lineValues.push({ label: '= Custo Total', orc: costTotalOrcado, pre: costTotalPrevia, subtotal: 'cost', isPos: true });
-    lineValues.push({ label: '= Margem Contribuição', orc: mc_orcado, pre: mc_previa, subtotal: 'mc', isPos: true, clickable: false });
-    lineValues.push({ label: 'MC %', orc: mc_pct_orcado, pre: mc_pct_previa, isPercent: true, isPos: true });
+    lineValues.push({ label: '= Custo Total', orc: costTotalOrcado, pre: costTotalPrevia, subtotal: 'cost', isPos: true, type: 'custo' });
+    lineValues.push({ label: '= Margem Contribuição', orc: mc_orcado, pre: mc_previa, subtotal: 'mc', isPos: true, type: 'receita', clickable: false });
+    lineValues.push({ label: 'MC %', orc: mc_pct_orcado, pre: mc_pct_previa, isPercent: true, isPos: true, type: 'receita' });
 
     const createLine = (line) => {
         const tr = document.createElement('tr');
@@ -403,6 +415,9 @@ function renderDRE(item) {
 
         const tdOrc = document.createElement('td');
         tdOrc.textContent = line.isPercent ? `${line.orc.toFixed(1)}%` : formatCurrency(line.orc);
+        if (line.label === '= Margem Contribuição') {
+            tdOrc.style.color = line.orc >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+        }
         tr.appendChild(tdOrc);
 
         const tdPre = document.createElement('td');
@@ -461,7 +476,8 @@ function renderDRE(item) {
                             <tr>
                                 <th>Descrição</th>
                                 <th>CR Origem</th>
-                                <th>Aba de Origem</th>
+                                <th>Descrição CR Origem</th>
+                                <th>Responsável CR Envio</th>
                                 <th>Valor</th>
                             </tr>
                         </thead>
@@ -477,9 +493,13 @@ function renderDRE(item) {
                         origemTd.textContent = entry.origem || '-';
                         entryRow.appendChild(origemTd);
 
-                        const abaTd = document.createElement('td');
-                        abaTd.textContent = entry.aba_origem || '-';
-                        entryRow.appendChild(abaTd);
+                        const descOrigemTd = document.createElement('td');
+                        descOrigemTd.textContent = entry.descricao_cr_envio || '-';
+                        entryRow.appendChild(descOrigemTd);
+
+                        const responsavelTd = document.createElement('td');
+                        responsavelTd.textContent = entry.responsavel_cr_envio || '-';
+                        entryRow.appendChild(responsavelTd);
 
                         const valorTd = document.createElement('td');
                         valorTd.textContent = formatCurrency(entry.valor ?? 0);
@@ -499,14 +519,15 @@ function renderDRE(item) {
 
         tr.classList.add('compare-row');
         const tdDiff = document.createElement('td');
+        const tipo = line.type || 'receita';
         if (line.isPercent) {
             const diff = line.pre - line.orc;
             tdDiff.textContent = `${diff >= 0 ? '+' : ''}${diff.toFixed(1)}%`;
-            tdDiff.className = diff > 0 ? 'val-pos' : diff < 0 ? 'val-neg' : '';
+            tdDiff.style.color = corDelta(diff, tipo);
         } else {
-            const diff = line.pre - line.orc;
+            const diff = tipo === 'custo' ? line.orc - line.pre : line.pre - line.orc;
             tdDiff.textContent = `${diff > 0 ? '+' : ''}${formatCurrency(diff)}`;
-            tdDiff.className = (!line.isPos ? (diff > 0 ? 'val-neg' : 'val-pos') : (diff > 0 ? 'val-pos' : 'val-neg'));
+            tdDiff.style.color = corDelta(diff, tipo);
         }
         tr.appendChild(tdDiff);
 
@@ -557,5 +578,9 @@ async function fetchLancamentos(cr, categoria, mes) {
 
 // Initial Call
 document.addEventListener('DOMContentLoaded', () => {
-    fetchFiltros().then(() => carregarCRs());
+    fetchFiltros()
+        .catch(err => {
+            console.error('Falha ao carregar filtros:', err);
+        })
+        .finally(() => carregarCRs());
 });
