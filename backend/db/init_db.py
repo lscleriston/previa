@@ -42,6 +42,7 @@ def init_db():
         metodologia TEXT,
         tipo_opp TEXT,
         cr TEXT,
+        cr2 TEXT,
         semana_fechamento TEXT,
         cr_oi TEXT,
         ordem_interna TEXT,

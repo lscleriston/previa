@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light-executive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise por Linha</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/cr_analysis.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Forecast Pro</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="cr_analysis.html">Análise por CR</a>
+                <a href="analise_linha.html" class="active">Análise por Linha</a>
+                <a href="atualizar.html">Atualizar Dados</a>
+                <a href="admin_users.html">Admin Usuários</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Análise por Linha</h1>
+                    <p class="subtitle">Análise dos lançamentos por categoria, origem e destino</p>
+                </div>
+                <div style="color: var(--text-muted); font-size: 0.85rem;">
+                    Última carga: —
+                </div>
+            </header>
+
+            <section class="filters-section filters-bar">
+                <div class="filter-group">
+                    <label>Mês de Ref.</label>
+                    <select id="filter-mes" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Diretor</label>
+                    <select id="filter-diretor" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Gerente</label>
+                    <select id="filter-gerente" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
+                </div>
+            </section>
+
+            <section class="table-section">
+                <div class="table-header">
+                    <h2>Visão por Linha</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table comparativo-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Descrição</th>
+                                <th class="col-num">Orçado</th>
+                                <th class="col-num">Prévia</th>
+                                <th class="col-num">Δ R$</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analise-linha-body">
+                            <tr><td colspan="5" style="text-align:center;">Carregando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/analise_linha.js"></script>
+</body>
+</html>
