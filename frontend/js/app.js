@@ -143,7 +143,7 @@ function setTheme(name) {
     document.documentElement.setAttribute('data-theme', name);
     localStorage.setItem('app-theme', name);
     document.querySelectorAll('.theme-menu button').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick').includes(name));
+        btn.classList.toggle('active', btn.dataset.theme === name);
     });
     document.getElementById('theme-menu')?.classList.remove('open');
 }
@@ -158,10 +158,33 @@ document.addEventListener('click', (e) => {
     }
 });
 
+function bindThemeControls() {
+    const themeButton = document.querySelector('.theme-btn');
+    if (themeButton) {
+        themeButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            toggleThemeMenu();
+        });
+    }
+    document.querySelectorAll('.theme-menu button[data-theme]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            setTheme(btn.dataset.theme);
+        });
+    });
+}
+
 (function initTheme() {
     const saved = localStorage.getItem('app-theme') || 'light-executive';
     setTheme(saved);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindThemeControls);
+    } else {
+        bindThemeControls();
+    }
 })();
+
+window.setTheme = setTheme;
+window.toggleThemeMenu = toggleThemeMenu;
 
 // Inicia
 init();
