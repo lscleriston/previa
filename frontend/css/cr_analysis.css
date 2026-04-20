@@ -120,6 +120,40 @@
     color: var(--accent-blue);
 }
 
+.table-section .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.table-section .data-table th,
+.table-section .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.32);
+}
+
+.table-section .data-table th {
+    text-align: left;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.table-section .data-table td {
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.table-section .data-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.table-section .data-table tr:last-child td {
+    border-bottom: none;
+}
+
 .comparativo-table {
     width: 100%;
     border-collapse: collapse;
