@@ -125,17 +125,22 @@ def init_db():
     );
     """)
     
-    # Cria usuário admin padrão apenas se não existir nenhum usuário.
-    cursor.execute("SELECT COUNT(*) FROM users")
-    if cursor.fetchone()[0] == 0:
-        from passlib.context import CryptContext
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        password_hash = pwd_context.hash("admin")
-        cursor.execute(
-            "INSERT INTO users (username, password_hash, is_admin, created_at) VALUES (?, ?, ?, ?)",
-            ("admin", password_hash, 1, datetime.utcnow().isoformat())
-        )
-        print("Usuário administrador padrão 'admin' criado com senha 'admin'. Altere imediatamente.")
+    def ensure_user(username, password, is_admin=False):
+        cursor.execute("SELECT COUNT(*) FROM users WHERE username = ?", (username,))
+        if cursor.fetchone()[0] == 0:
+            from passlib.context import CryptContext
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            password_hash = pwd_context.hash(password)
+            cursor.execute(
+                "INSERT INTO users (username, password_hash, is_admin, created_at) VALUES (?, ?, ?, ?)",
+                (username, password_hash, 1 if is_admin else 0, datetime.utcnow().isoformat())
+            )
+            print(f"Usuário '{username}' criado com senha '{password}'.")
+        else:
+            print(f"Usuário '{username}' já existe. Pulando criação.")
+
+    ensure_user("admin", "admin", is_admin=True)
+    ensure_user("cleristonls", "senha123", is_admin=True)
     
     conn.commit()
     conn.close()

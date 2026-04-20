@@ -21,27 +21,27 @@ def create_users_table(conn):
     print("Tabela 'users' verificada/criada com sucesso.")
 
 def create_initial_admin_user(conn):
-    """Cria um usuário 'admin' inicial se nenhum usuário existir."""
+    """Cria usuários de administração iniciais se não existirem."""
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM users")
-    if cursor.fetchone()[0] == 0:
-        from passlib.context import CryptContext
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        
-        username = "admin"
-        password = "admin" # Senha provisória
-        password_hash = pwd_context.hash(password)
-        created_at = datetime.utcnow().isoformat()
-        
-        cursor.execute(
-            "INSERT INTO users (username, password_hash, is_admin, created_at) VALUES (?, ?, ?, ?)",
-            (username, password_hash, 1, created_at)
-        )
-        conn.commit()
-        print(f"Usuário administrador inicial '{username}' criado com a senha provisória '{password}'.")
-        print("IMPORTANTE: Altere esta senha em um ambiente de produção.")
-    else:
-        print("O banco de dados já contém usuários. Nenhum usuário inicial foi criado.")
+
+    def ensure_user(username, password, is_admin=False):
+        cursor.execute("SELECT COUNT(*) FROM users WHERE username = ?", (username,))
+        if cursor.fetchone()[0] == 0:
+            from passlib.context import CryptContext
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            password_hash = pwd_context.hash(password)
+            created_at = datetime.utcnow().isoformat()
+            cursor.execute(
+                "INSERT INTO users (username, password_hash, is_admin, created_at) VALUES (?, ?, ?, ?)",
+                (username, password_hash, 1 if is_admin else 0, created_at)
+            )
+            conn.commit()
+            print(f"Usuário administrador inicial '{username}' criado com a senha provisória '{password}'.")
+        else:
+            print(f"Usuário '{username}' já existe. Pulando criação.")
+
+    ensure_user("admin", "admin", is_admin=True)
+    ensure_user("cleristonls", "senha123", is_admin=True)
 
 
 if __name__ == "__main__":

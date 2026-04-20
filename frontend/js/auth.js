@@ -19,15 +19,19 @@ function getAuthHeaders() {
     return token ? { 'Authorization': `Bearer ${token}` } : {};
 }
 
+function isLoginPath() {
+    return window.location.pathname.endsWith('/login.html') || window.location.pathname.endsWith('/pages/login.html');
+}
+
 function redirectToLoginIfNeeded() {
     const token = getAccessToken();
-    if (!token && !window.location.pathname.endsWith('/login.html')) {
+    if (!token && !isLoginPath()) {
         window.location.href = '/login.html';
     }
 }
 
 function redirectToAppIfLogged() {
-    if (getAccessToken() && window.location.pathname.endsWith('/login.html')) {
+    if (getAccessToken() && isLoginPath()) {
         window.location.href = '/index.html';
     }
 }
@@ -37,7 +41,17 @@ async function fetchWithAuth(path, options = {}) {
         ...(options.headers || {}),
         ...getAuthHeaders(),
     };
-    const response = await fetch(`${API_BASE_URL}${path}`, options);
+
+    let requestUrl;
+    if (typeof path === 'string' && (path.startsWith('http://') || path.startsWith('https://'))) {
+        requestUrl = path;
+    } else if (path instanceof URL) {
+        requestUrl = path.href;
+    } else {
+        requestUrl = `${API_BASE_URL}${path}`;
+    }
+
+    const response = await fetch(requestUrl, options);
     if (response.status === 401 || response.status === 403) {
         clearAccessToken();
         if (!window.location.pathname.endsWith('/login.html')) {
