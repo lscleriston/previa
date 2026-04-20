@@ -438,8 +438,6 @@ function renderDRE(item) {
                     return;
                 }
 
-                document.querySelectorAll('.comparativo-details-row').forEach(node => node.remove());
-                document.querySelectorAll('.drill-icon').forEach(node => node.textContent = '⊕');
                 icon.textContent = '⊖';
 
                 const detailRow = document.createElement('tr');
