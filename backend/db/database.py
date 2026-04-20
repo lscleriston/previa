@@ -12,6 +12,7 @@ DB_PATH = os.environ.get(
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    ensure_forecast_oportunidades_schema(conn)
     try:
         yield conn
     finally:
@@ -89,6 +90,15 @@ def delete_user(user_id):
         conn.commit()
 
 
+def ensure_forecast_oportunidades_schema(conn):
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA table_info(forecast_oportunidades)")
+    cols = [row[1] for row in cursor.fetchall()]
+    if 'cr2' not in cols:
+        cursor.execute("ALTER TABLE forecast_oportunidades ADD COLUMN cr2 TEXT")
+        conn.commit()
+
+
 def get_filtros():
     with get_db_connection() as conn:
         cursor = conn.cursor()
@@ -130,7 +140,7 @@ def get_oportunidades(filtros):
                    SUM(CASE WHEN v.cenario='Forecast' THEN v.valor_rb ELSE 0 END) as vl_total_forecast_rb
             FROM forecast_oportunidades o
             LEFT JOIN forecast_valores v ON o.chave_ek = v.chave_ek
-            LEFT JOIN dim_cr d ON (o.cr = d.CR_SAP OR o.cr = d.Cod_Cr)
+            LEFT JOIN dim_cr d ON (o.cr = d.CR_SAP OR o.cr = d.Cod_Cr OR o.cr2 = d.CR_SAP OR o.cr2 = d.Cod_Cr)
             WHERE 1=1
         """
         params = []
@@ -154,7 +164,8 @@ def get_oportunidades(filtros):
             query += " AND LOWER(TRIM(o.produto)) = LOWER(TRIM(?))"
             params.append(filtros['produto'])
         if filtros.get('cr'):
-            query += " AND (d.CR_SAP = ? OR d.Cod_Cr = ? OR o.cr = ?)"
+            query += " AND (d.CR_SAP = ? OR d.Cod_Cr = ? OR o.cr = ? OR o.cr2 = ?)"
+            params.append(filtros['cr'])
             params.append(filtros['cr'])
             params.append(filtros['cr'])
             params.append(filtros['cr'])
@@ -173,7 +184,7 @@ def get_resumo(filtros):
     with get_db_connection() as conn:
         cursor = conn.cursor()
         
-        base_query = "FROM forecast_oportunidades o LEFT JOIN forecast_valores v ON o.chave_ek = v.chave_ek LEFT JOIN dim_cr d ON (o.cr = d.CR_SAP OR o.cr = d.Cod_Cr) WHERE 1=1"
+        base_query = "FROM forecast_oportunidades o LEFT JOIN forecast_valores v ON o.chave_ek = v.chave_ek LEFT JOIN dim_cr d ON (o.cr = d.CR_SAP OR o.cr = d.Cod_Cr OR o.cr2 = d.CR_SAP OR o.cr2 = d.Cod_Cr) WHERE 1=1"
         params = []
         
         if filtros.get('gerente'):
@@ -195,7 +206,8 @@ def get_resumo(filtros):
             base_query += " AND LOWER(TRIM(o.produto)) = LOWER(TRIM(?))"
             params.append(filtros['produto'])
         if filtros.get('cr'):
-            base_query += " AND (d.CR_SAP = ? OR d.Cod_Cr = ? OR o.cr = ?)"
+            base_query += " AND (d.CR_SAP = ? OR d.Cod_Cr = ? OR o.cr = ? OR o.cr2 = ?)"
+            params.append(filtros['cr'])
             params.append(filtros['cr'])
             params.append(filtros['cr'])
             params.append(filtros['cr'])
@@ -219,7 +231,7 @@ def get_resumo(filtros):
 def get_resumo_por_cr(filtros):
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        base_query = "FROM forecast_oportunidades o LEFT JOIN forecast_valores v ON o.chave_ek = v.chave_ek LEFT JOIN dim_cr d ON (o.cr = d.CR_SAP OR o.cr = d.Cod_Cr) WHERE 1=1"
+        base_query = "FROM forecast_oportunidades o LEFT JOIN forecast_valores v ON o.chave_ek = v.chave_ek LEFT JOIN dim_cr d ON (o.cr = d.CR_SAP OR o.cr = d.Cod_Cr OR o.cr2 = d.CR_SAP OR o.cr2 = d.Cod_Cr) WHERE 1=1"
         params = []
         
         if filtros.get('gerente'):
@@ -241,7 +253,8 @@ def get_resumo_por_cr(filtros):
             base_query += " AND LOWER(TRIM(o.produto)) = LOWER(TRIM(?))"
             params.append(filtros['produto'])
         if filtros.get('cr'):
-            base_query += " AND (d.CR_SAP = ? OR d.Cod_Cr = ? OR o.cr = ?)"
+            base_query += " AND (d.CR_SAP = ? OR d.Cod_Cr = ? OR o.cr = ? OR o.cr2 = ?)"
+            params.append(filtros['cr'])
             params.append(filtros['cr'])
             params.append(filtros['cr'])
             params.append(filtros['cr'])
@@ -249,7 +262,7 @@ def get_resumo_por_cr(filtros):
             base_query += " AND v.mes_ref = ?"
             params.append(filtros['mes'])
 
-        query = f"SELECT COALESCE(d.Cod_Cr, o.cr) as cr, COALESCE(d.CR_SAP, o.cr) as cr_sap, COALESCE(d.Des_CR, o.cr) as des_cr, COUNT(DISTINCT o.id) as qtd_opp, SUM(CASE WHEN v.cenario='Forecast' THEN v.valor_rl ELSE 0 END) as total_rl, SUM(CASE WHEN v.cenario='Forecast' THEN v.valor_rb ELSE 0 END) as total_rb {base_query} GROUP BY COALESCE(d.Cod_Cr, o.cr), COALESCE(d.CR_SAP, o.cr), COALESCE(d.Des_CR, o.cr) ORDER BY total_rl DESC"
+        query = f"SELECT COALESCE(d.Cod_Cr, o.cr, o.cr2) as cr, COALESCE(d.CR_SAP, o.cr, o.cr2) as cr_sap, COALESCE(d.Des_CR, o.cr, o.cr2) as des_cr, COUNT(DISTINCT o.id) as qtd_opp, SUM(CASE WHEN v.cenario='Forecast' THEN v.valor_rl ELSE 0 END) as total_rl, SUM(CASE WHEN v.cenario='Forecast' THEN v.valor_rb ELSE 0 END) as total_rb {base_query} GROUP BY COALESCE(d.Cod_Cr, o.cr, o.cr2), COALESCE(d.CR_SAP, o.cr, o.cr2), COALESCE(d.Des_CR, o.cr, o.cr2) ORDER BY total_rl DESC"
         cursor.execute(query, params)
         crs = [dict(row) for row in cursor.fetchall()]
 
