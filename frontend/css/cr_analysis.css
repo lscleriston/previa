@@ -140,6 +140,15 @@
     text-transform: uppercase;
 }
 
+.table-section .data-table th.col-num {
+    text-align: right;
+}
+
+.table-section .data-table th:nth-child(2),
+.table-section .data-table td:nth-child(2) {
+    text-align: center;
+}
+
 .table-section .data-table td {
     text-align: right;
     font-size: 0.9rem;
