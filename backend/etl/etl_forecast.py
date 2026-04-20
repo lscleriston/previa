@@ -3,6 +3,7 @@ import openpyxl
 import datetime
 import os
 import glob
+import re
 
 DB_PATH = os.environ.get(
     "DB_PATH",
@@ -49,6 +50,7 @@ def init_db():
         metodologia TEXT,
         tipo_opp TEXT,
         cr TEXT,
+        cr2 TEXT,
         semana_fechamento TEXT,
         cr_oi TEXT,
         ordem_interna TEXT,
@@ -92,6 +94,14 @@ def init_db():
     conn.commit()
     return conn
 
+
+def ensure_forecast_oportunidades_schema(cursor):
+    cursor.execute("PRAGMA table_info(forecast_oportunidades)")
+    cols = [row[1] for row in cursor.fetchall()]
+    if 'cr2' not in cols:
+        cursor.execute("ALTER TABLE forecast_oportunidades ADD COLUMN cr2 TEXT")
+
+
 def parse_date(val):
     if isinstance(val, datetime.datetime):
         return val.strftime("%Y-%m-%d")
@@ -104,6 +114,18 @@ def parse_float(val):
         return float(val)
     except:
         return 0.0
+
+
+def parse_cr_values(cr_raw):
+    if cr_raw is None:
+        return None, None
+    text = str(cr_raw).strip()
+    if not text or text.lower() == 'none':
+        return None, None
+    parts = [part.strip() for part in re.split(r'[-/,;]', text) if part and part.strip().lower() != 'none']
+    cr = parts[0] if len(parts) > 0 else None
+    cr2 = parts[1] if len(parts) > 1 else None
+    return cr, cr2
 
 
 def normalize_header_name(val):
@@ -203,6 +225,7 @@ def run_etl():
     print(f"Usando banco de dados em: {DB_PATH}")
     conn = init_db()
     cursor = conn.cursor()
+    ensure_forecast_oportunidades_schema(cursor)
     
     agora = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
@@ -258,9 +281,9 @@ def run_etl():
 
         for i, row in enumerate(sheet.iter_rows(min_row=header_row_idx + 1, values_only=True), start=header_row_idx + 1):
             cr_raw = get_cell(row, idx_map['cr'])
-            cr = str(cr_raw).split('-')[0].strip() if cr_raw else None
+            cr, cr2 = parse_cr_values(cr_raw)
 
-            if cr == '4000020240':
+            if cr == '4000020240' or cr2 == '4000020240':
                 cr_4000020240['found'] = True
                 cr_4000020240['chave_ek'] = get_cell(row, idx_map['chave_ek'])
                 cr_4000020240['row'] = i
@@ -292,6 +315,7 @@ def run_etl():
                     'descricao_oportunidade': str(get_cell(row, idx_map['descricao_oportunidade'], row[18] if len(row) > 18 else None)).strip() if get_cell(row, idx_map['descricao_oportunidade'], row[18] if len(row) > 18 else None) else None,
                     'status_comercial': str(get_cell(row, idx_map['status_comercial'], row[19] if len(row) > 19 else None)).strip() if get_cell(row, idx_map['status_comercial'], row[19] if len(row) > 19 else None) else None,
                     'cr': cr,
+                    'cr2': cr2,
                     'moeda': str(get_cell(row, idx_map['moeda'], row[26] if len(row) > 26 else None)).strip() if get_cell(row, idx_map['moeda'], row[26] if len(row) > 26 else None) else None,
                     'data_inicio_contrato': parse_date(get_cell(row, idx_map['data_inicio_contrato'], row[29] if len(row) > 29 else None)),
                     'data_fim_contrato': parse_date(get_cell(row, idx_map['data_fim_contrato'], row[30] if len(row) > 30 else None)),
@@ -300,12 +324,12 @@ def run_etl():
                 cursor.execute('''INSERT OR REPLACE INTO forecast_oportunidades 
                                (chave_ek, data_criacao, banco, pais, tipo_papel, owner, ger_comercial,
                                 pratica, produto, cliente, subcliente, id_oportunidade, descricao_oportunidade,
-                                status_comercial, cr, moeda, data_inicio_contrato, data_fim_contrato, semana_carga, arquivo_origem)
-                               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+                                status_comercial, cr, cr2, moeda, data_inicio_contrato, data_fim_contrato, semana_carga, arquivo_origem)
+                               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
                                (opp['chave_ek'], opp['data_criacao'], opp['banco'], opp['pais'],
                                 opp['tipo_papel'], opp['owner'], opp['ger_comercial'], opp['pratica'],
                                 opp['produto'], opp['cliente'], opp['subcliente'], opp['id_oportunidade'],
-                                opp['descricao_oportunidade'], opp['status_comercial'], opp['cr'], opp['moeda'],
+                                opp['descricao_oportunidade'], opp['status_comercial'], opp['cr'], opp['cr2'], opp['moeda'],
                                 opp['data_inicio_contrato'], opp['data_fim_contrato'], agora, XLSX_PATH))
 
                 cursor.execute('DELETE FROM forecast_valores WHERE chave_ek = ?', (opp['chave_ek'],))
