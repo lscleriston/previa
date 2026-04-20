@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atualizar Dados</title>
+    <title>Importar Prévia</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -14,23 +14,23 @@
                 <h2>Forecast Pro</h2>
             </div>
             <nav class="nav-menu">
-                <a href="cr_analysis.html">Análise por CR</a>
-                <a href="atualizar.html" class="active">Atualizar Dados</a>
-                <a href="admin_users.html">Admin Usuários</a>
+                <a href="cr_analysis.html">Resultado por CR</a>
+                <a href="analise_linha.html">Custo por Categoria</a>
+                <a href="atualizar.html" class="active">Importar Prévia</a>
+                <a href="admin_users.html">Acessos</a>
             </nav>
         </aside>
 
         <main class="main-content">
             <header class="header">
                 <div>
-                    <h1>Atualizar base de dados</h1>
+                    <h1>Importar Prévia</h1>
                     <p class="subtitle">Selecione o arquivo da Prévia para reprocessar todos os dados.</p>
                 </div>
             </header>
 
             <section class="upload-card">
-                <h2>Atualizar base de dados</h2>
-                <p>Selecione o arquivo .xlsx da Prévia para reprocessar todos os dados.</p>
+                    <h2>Importar Prévia</h2>
 
                 <div class="upload-zone" id="upload-zone">
                     <input type="file" id="file-input" accept=".xlsx" hidden>
@@ -41,7 +41,7 @@
 
                 <div id="file-preview" style="display:none; gap: 1rem; align-items: center; margin-bottom: 1rem;">
                     <span id="file-name"></span>
-                    <button id="btn-iniciar" class="btn-primary" type="button">Iniciar carga</button>
+                    <button id="btn-iniciar" class="btn-primary" type="button">Iniciar importação</button>
                 </div>
 
                 <div id="progresso" style="display:none; margin-top: 1rem;">
