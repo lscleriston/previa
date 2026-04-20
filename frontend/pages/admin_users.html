@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light-executive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração de Usuários</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Forecast Pro</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="index.html">Visão Geral</a>
+                <a href="cr_analysis.html">Análise por CR</a>
+                <a href="atualizar.html">Atualizar Dados</a>
+                <a href="admin_users.html" class="active">Admin Usuários</a>
+                <button id="logout-button" class="btn-link">Sair</button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Administração de Usuários</h1>
+                    <p class="subtitle">Gerencie contas e permissões de administradores.</p>
+                </div>
+            </header>
+
+            <section class="card-section">
+                <div class="user-admin-panel">
+                    <div class="user-admin-form">
+                        <h2 id="form-title">Criar novo usuário</h2>
+                        <form id="create-user-form">
+                            <label for="new-username">Usuário</label>
+                            <input type="text" id="new-username" placeholder="novo.usuario" required>
+
+                            <label for="new-password">Senha</label>
+                            <input type="password" id="new-password" placeholder="Digite uma senha" required>
+
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="new-is-admin">
+                                Administrador
+                            </label>
+
+                            <button id="create-user-button" class="btn-primary" type="submit">Criar usuário</button>
+                        </form>
+                        <p id="status-message" class="form-status"></p>
+                    </div>
+
+                    <div class="user-admin-list">
+                        <h2>Usuários existentes</h2>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Usuário</th>
+                                        <th>Admin?</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <tr><td colspan="4">Carregando...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin_users.js"></script>
+</body>
+</html>
