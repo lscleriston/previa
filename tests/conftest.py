@@ -179,6 +179,39 @@ def test_db_path(tmp_path_factory):
     )
 
     cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "Receita Bruta", 12000.0),
+    )
+    cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "Receita Líquida", 10000.0),
+    )
+    cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "Pessoal", -2000.0),
+    )
+    cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "Rateio", -1000.0),
+    )
+    cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "Recuperação Pessoal", -500.0),
+    )
+    cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "Recuperação Outros Gastos", -200.0),
+    )
+    cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "Margem de Contribuição", 7700.0),
+    )
+    cursor.execute(
+        "INSERT INTO orcamento_previa (mes_ref, cr, categoria_despesa, valor_plano) VALUES (?, ?, ?, ?)",
+        ("2026-04", "CR-001", "MC %", 0.77),
+    )
+
+    cursor.execute(
         "INSERT INTO ajustamentos_gerencia (gerencia, resultado, cr_credito, cr_debito, mes_ref, incremento_credito, incremento_debito, justificativa, cr_envio, desc_cr_envio, gestor_cr_envio, cr_destino, desc_cr_destino, gestor_cr_destino, aba_origem) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         ("GERENTE TESTE", "Recuperação Pessoal", None, "CR-003", "2026-04", 0.0, -250.0, "Teste débito recuperação", None, None, None, None, None, None, "TESTE"),
     )
@@ -195,7 +228,7 @@ def test_db_path(tmp_path_factory):
 
 @pytest.fixture
 def api_client(test_db_path):
-    client = AsyncClient(app=app, base_url="http://localhost:8000", transport=ASGITransport(app=app))
+    client = AsyncClient(base_url="http://localhost:8000", transport=ASGITransport(app=app))
     yield client
     loop = asyncio.new_event_loop()
     try:
