@@ -1,6 +1,7 @@
 import sqlite3
 import os
 from contextlib import contextmanager
+from datetime import datetime
 
 DB_PATH = os.environ.get(
     "DB_PATH",
@@ -15,6 +16,78 @@ def get_db_connection():
         yield conn
     finally:
         conn.close()
+
+
+def get_user_by_username(username):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id, username, password_hash, is_admin, created_at FROM users WHERE username = ?",
+            (username,)
+        )
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
+
+def get_user_by_id(user_id):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id, username, password_hash, is_admin, created_at FROM users WHERE id = ?",
+            (user_id,)
+        )
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
+
+def list_users():
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id, username, is_admin, created_at FROM users ORDER BY username"
+        )
+        return [dict(row) for row in cursor.fetchall()]
+
+
+def create_user(username, password_hash, is_admin=False):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO users (username, password_hash, is_admin, created_at) VALUES (?, ?, ?, ?)",
+            (username, password_hash, int(is_admin), datetime.utcnow().isoformat())
+        )
+        conn.commit()
+        return get_user_by_id(cursor.lastrowid)
+
+
+def update_user(user_id, username=None, password_hash=None, is_admin=None):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        updates = []
+        params = []
+        if username is not None:
+            updates.append("username = ?")
+            params.append(username)
+        if password_hash is not None:
+            updates.append("password_hash = ?")
+            params.append(password_hash)
+        if is_admin is not None:
+            updates.append("is_admin = ?")
+            params.append(int(is_admin))
+        if not updates:
+            return get_user_by_id(user_id)
+        params.append(user_id)
+        cursor.execute(f"UPDATE users SET {', '.join(updates)} WHERE id = ?", tuple(params))
+        conn.commit()
+        return get_user_by_id(user_id)
+
+
+def delete_user(user_id):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+
 
 def get_filtros():
     with get_db_connection() as conn:

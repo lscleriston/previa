@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from datetime import datetime
 
 DB_PATH = os.environ.get(
     "DB_PATH",
@@ -114,7 +115,32 @@ def init_db():
         Diretor TEXT,
         Gerente TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        is_admin INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL
+    );
     """)
+    
+    def ensure_user(username, password, is_admin=False):
+        cursor.execute("SELECT COUNT(*) FROM users WHERE username = ?", (username,))
+        if cursor.fetchone()[0] == 0:
+            from passlib.context import CryptContext
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            password_hash = pwd_context.hash(password)
+            cursor.execute(
+                "INSERT INTO users (username, password_hash, is_admin, created_at) VALUES (?, ?, ?, ?)",
+                (username, password_hash, 1 if is_admin else 0, datetime.utcnow().isoformat())
+            )
+            print(f"Usuário '{username}' criado com senha '{password}'.")
+        else:
+            print(f"Usuário '{username}' já existe. Pulando criação.")
+
+    ensure_user("admin", "admin", is_admin=True)
+    ensure_user("cleristonls", "senha123", is_admin=True)
     
     conn.commit()
     conn.close()

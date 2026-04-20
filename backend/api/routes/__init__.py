@@ -1,1 +1,1 @@
-from . import filtros, forecast, cr, upload
+from . import filtros, forecast, cr, upload, auth
