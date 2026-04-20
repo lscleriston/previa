@@ -119,8 +119,8 @@ function renderTable() {
             origemRow.innerHTML = `
                 <td style="padding-left: 1.25rem; font-weight: 600;"><span class="drill-icon">${expandedOrigens.has(`${item.linha}||${origemItem.origem}`) ? '⊖' : '⊕'}</span>${origemItem.origem}</td>
                 <td></td>
-                <td class="col-num">${formatCurrency(origemItem.total)}</td>
                 <td class="col-num"></td>
+                <td class="col-num">${formatCurrency(origemItem.total)}</td>
                 <td class="col-num"></td>
             `;
             origemRow.addEventListener('click', () => toggleOrigem(item.linha, origemItem.origem));
@@ -136,13 +136,9 @@ function renderTable() {
                     <td style="padding-left: 2.5rem; color: var(--text-muted);">${destino.cr}</td>
                     <td style="color: var(--text-muted);">${destino.des_cr}</td>
                     <td class="col-num"></td>
-                    <td class="col-num"></td>
+                    <td class="col-num">${formatCurrency(destino.valor)}</td>
                     <td class="col-num"></td>
                 `;
-
-                const deltaCell = crRow.querySelector('td:last-child');
-                const deltaNode = formatDelta(destino.valor);
-                deltaCell.appendChild(deltaNode);
                 tbody.appendChild(crRow);
             });
         });
