@@ -30,8 +30,35 @@
                     <h1>Resultado por CR</h1>
                     <p class="subtitle">Orçado vs Prévia · Cost Center por Cost Center</p>
                 </div>
-                <div style="color: var(--text-muted); font-size: 0.85rem;">
-                    Última carga: —
+                <div class="header-actions">
+                    <div class="theme-switcher">
+                        <button class="theme-btn" type="button" title="Tema">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                              <circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+                              <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <div class="theme-menu" id="theme-menu">
+                            <button type="button" data-theme="dark-default">
+                              <span class="theme-dot" style="background:#1A1D27"></span> Padrão
+                            </button>
+                            <button type="button" data-theme="slate-corporate">
+                              <span class="theme-dot" style="background:#141720"></span> Slate Corporate
+                            </button>
+                            <button type="button" data-theme="midnight-green">
+                              <span class="theme-dot" style="background:#111815"></span> Midnight Green
+                            </button>
+                            <button type="button" data-theme="charcoal-brand">
+                              <span class="theme-dot" style="background:#181B1F"></span> Charcoal Brand
+                            </button>
+                            <button type="button" data-theme="light-executive">
+                              <span class="theme-dot" style="background:#E2E8F0"></span> Light Executive
+                            </button>
+                        </div>
+                    </div>
+                    <div style="color: var(--text-muted); font-size: 0.85rem;">
+                        Última carga: —
+                    </div>
                 </div>
             </header>
 
