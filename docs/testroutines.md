@@ -15,7 +15,7 @@ Antes de iniciar os testes, confirme:
 
 ---
 
-## 2. Página — Análise por CR
+## 2. Página — Resultado por CR
 
 ### 2.1 Carregamento inicial
 
@@ -124,7 +124,7 @@ Pegue um CR com Rec. Pessoal ≠ 0, some manualmente e confira se o `= MC` exibi
 
 ---
 
-## 5. Página — Atualizar Dados
+## 5. Página — Importar Prévia
 
 ### 5.1 Upload de arquivo — **área crítica**
 
@@ -154,7 +154,7 @@ Pegue um CR com Rec. Pessoal ≠ 0, some manualmente e confira se o `= MC` exibi
 | T62 | Botão "Iniciar carga" é reabilitado após conclusão | |
 | T63 | Em caso de erro em uma etapa, a etapa exibe ícone `✗` vermelho | |
 | T64 | Erro em uma etapa não trava a interface — botão volta a ficar habilitado | |
-| T65 | Após carga concluída, acessar Análise por CR mostra os dados novos | |
+| T65 | Após carga concluída, acessar Resultado por CR mostra os dados novos | |
 
 ---
 
@@ -200,8 +200,8 @@ Use esta tabela para registrar falhas encontradas durante os testes:
 
 ```
 1. Seção 1  — Pré-requisitos (sempre primeiro)
-2. Seção 5  — Atualizar Dados (garante que o banco tem dados frescos)
-3. Seção 2  — Análise por CR (carregamento e filtros)
+2. Seção 5  — Importar Prévia (garante que o banco tem dados frescos)
+3. Seção 2  — Resultado por CR (carregamento e filtros)
 4. Seção 3  — DRE Expandida (especialmente T30–T39 — recuperação)
 5. Seção 4  — Drill-down de lançamentos
 6. Seção 6  — Temas (somente se alterou CSS)

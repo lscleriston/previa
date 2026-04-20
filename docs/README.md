@@ -28,6 +28,47 @@ cd previa
 docker compose up --build
 ```
 
+## Como implantar em produção
+
+Para subir a aplicação em um servidor de produção, use Docker Compose em modo destacado e garanta que o arquivo Excel de forecast esteja em `data/raw/`.
+
+```bash
+git clone https://github.com/lscleriston/previa.git
+cd previa
+# Coloque o arquivo Excel em data/raw/
+# Exemplo: data/raw/Forecast Semanal 2026 - Abril.xlsx
+docker compose up --build -d
+```
+
+Após a primeira implantação, execute o ETL para popular o banco de dados:
+
+```bash
+curl -X POST http://<host>:8000/api/etl/executar
+```
+
+Ou internamente no container:
+
+```bash
+docker compose exec backend python backend/etl/etl_dim_cr.py
+docker compose exec backend python backend/etl/etl_forecast.py
+docker compose exec backend python backend/etl/etl_gerencias.py
+docker compose exec backend python backend/etl/etl_orcado_previa.py
+docker compose exec backend python backend/etl/etl_previa_folha.py
+```
+
+Para atualizar a aplicação em produção:
+
+```bash
+docker compose pull
+docker compose up --build -d
+```
+
+Para parar o ambiente:
+
+```bash
+docker compose down
+```
+
 ## Como rodar os ETLs após subir
 
 ### Via API
