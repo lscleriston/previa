@@ -238,7 +238,7 @@ function renderTable() {
         if (desvio > 0) desvioClass = 'val-pos';
         else if (desvio < 0) desvioClass = 'val-neg';
 
-        const mcPrevColorClass = mc_pct_previa >= mc_pct_orcado ? 'val-pos' : 'val-neg';
+        const mcPrevColorClass = mc_pct_previa < mc_pct_orcado ? 'val-neg' : '';
 
         let pctHtml = pctDisplay;
         if (pct !== null && Math.abs(pct) < 5 && mc_pct_orcado > 0) {
