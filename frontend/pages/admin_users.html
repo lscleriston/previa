@@ -3,35 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administração de Usuários</title>
+    <title>Admin Usuários — PREVIA</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
+
+        <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="logo">
-                <h2>Forecast Pro</h2>
+            <div class="sidebar-brand">
+                <div class="brand-mark">P</div>
+                <div class="brand-wordmark">PREVIA</div>
             </div>
-            <nav class="nav-menu">
-                <a href="cr_analysis.html">Resultado por CR</a>
-                <a href="analise_linha.html">Custo por Categoria</a>
-                <a href="atualizar.html">Importar Prévia</a>
-                <a href="admin_users.html" class="active">Acessos</a>
-                <button id="logout-button" class="btn-link">Sair</button>
+            <div class="sidebar-section-label">Workspace</div>
+            <nav class="sidebar-nav nav-menu">
+                <a href="index.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+                    <span>Visão Geral</span>
+                </a>
+                <a href="cr_analysis.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
+                    <span>Análise por CR</span>
+                </a>
+                <a href="analise_linha.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/></svg>
+                    <span>Análise por Linha</span>
+                </a>
+                <a href="atualizar.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V5"/><path d="M7 10l5-5 5 5"/><path d="M4 19h16"/></svg>
+                    <span>Atualizar Dados</span>
+                </a>
+                <a href="admin_users.html" class="nav-item active">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M15 20c0-2.5 2-4 4-4"/></svg>
+                    <span>Admin Usuários</span>
+                </a>
             </nav>
+            <div class="sidebar-footer">
+                <div class="avatar">CL</div>
+                <div class="user-meta">
+                    <div class="user-name">Previa Pro</div>
+                    <div class="user-role">MSP Forecast</div>
+                </div>
+                <button id="logout-button" class="icon-btn" title="Sair" style="width:28px;height:28px;flex-shrink:0">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><path d="M10 17l-5-5 5-5"/><path d="M15 12H5"/>
+                    </svg>
+                </button>
+            </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
-            <header class="header">
+            <header class="topbar">
                 <div>
-                    <h1>Administração de Usuários</h1>
-                    <p class="subtitle">Gerencie contas e permissões de administradores.</p>
+                    <h1 class="page-title">Administração de Usuários</h1>
+                    <p class="page-subtitle">Gerencie contas, permissões e acessos do painel</p>
                 </div>
             </header>
 
-            <section class="card-section">
+            <div class="page-body">
                 <div class="user-admin-panel">
+                    <!-- Create user form -->
                     <div class="user-admin-form">
                         <h2 id="form-title">Criar novo usuário</h2>
                         <form id="create-user-form">
@@ -46,31 +81,34 @@
                                 Administrador
                             </label>
 
-                            <button id="create-user-button" class="btn-primary" type="submit">Criar usuário</button>
+                            <button id="create-user-button" class="btn btn-primary" type="submit" style="width:100%;justify-content:center">Criar usuário</button>
                         </form>
                         <p id="status-message" class="form-status"></p>
                     </div>
 
+                    <!-- User list -->
                     <div class="user-admin-list">
                         <h2>Usuários existentes</h2>
-                        <div class="table-responsive">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Usuário</th>
-                                        <th>Admin?</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="users-table-body">
-                                    <tr><td colspan="4">Carregando...</td></tr>
-                                </tbody>
-                            </table>
+                        <div class="card" style="overflow:hidden">
+                            <div class="tbl-wrap table-responsive">
+                                <table class="tbl data-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:48px">ID</th>
+                                            <th>Usuário</th>
+                                            <th>Perfil</th>
+                                            <th style="text-align:right">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-table-body">
+                                        <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:28px">Carregando…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </main>
     </div>
 

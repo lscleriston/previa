@@ -3,74 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análise por Linha</title>
+    <title>Análise por Linha — PREVIA</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/cr_analysis.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
+
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="logo">
-                <h2>Forecast Pro</h2>
+            <div class="sidebar-brand">
+                <div class="brand-mark">P</div>
+                <div class="brand-wordmark">PREVIA</div>
             </div>
-            <nav class="nav-menu">
-                <a href="cr_analysis.html">Análise por CR</a>
-                <a href="analise_linha.html" class="active">Análise por Linha</a>
-                <a href="atualizar.html">Atualizar Dados</a>
-                <a href="admin_users.html">Admin Usuários</a>
+            <div class="sidebar-section-label">Workspace</div>
+            <nav class="sidebar-nav nav-menu">
+                <a href="index.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+                    <span>Visão Geral</span>
+                </a>
+                <a href="cr_analysis.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
+                    <span>Análise por CR</span>
+                </a>
+                <a href="analise_linha.html" class="nav-item active">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/></svg>
+                    <span>Análise por Linha</span>
+                </a>
+                <a href="atualizar.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V5"/><path d="M7 10l5-5 5 5"/><path d="M4 19h16"/></svg>
+                    <span>Atualizar Dados</span>
+                </a>
+                <a href="admin_users.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M15 20c0-2.5 2-4 4-4"/></svg>
+                    <span>Admin Usuários</span>
+                </a>
             </nav>
+            <div class="sidebar-footer">
+                <div class="avatar">CL</div>
+                <div class="user-meta">
+                    <div class="user-name">Previa Pro</div>
+                    <div class="user-role">MSP Forecast</div>
+                </div>
+            </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="header">
+            <header class="topbar">
                 <div>
-                    <h1>Análise por Linha</h1>
-                    <p class="subtitle">Análise dos lançamentos por categoria, origem e destino</p>
+                    <h1 class="page-title">Análise por Linha</h1>
+                    <p class="page-subtitle">Lançamentos por categoria, origem e destino</p>
                 </div>
-                <div style="color: var(--text-muted); font-size: 0.85rem;">
-                    Última carga: —
+                <div class="topbar-actions">
+                    <div class="theme-switcher">
+                        <button class="theme-btn" type="button" title="Tema">
+                            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                        </button>
+                        <div class="theme-menu" id="theme-menu">
+                            <button type="button" data-theme="dark-default"><span class="theme-dot" style="background:#1A1D27"></span> Padrão</button>
+                            <button type="button" data-theme="slate-corporate"><span class="theme-dot" style="background:#141720"></span> Slate Corporate</button>
+                            <button type="button" data-theme="midnight-green"><span class="theme-dot" style="background:#111815"></span> Midnight Green</button>
+                            <button type="button" data-theme="charcoal-brand"><span class="theme-dot" style="background:#181B1F"></span> Charcoal Brand</button>
+                            <button type="button" data-theme="light-executive"><span class="theme-dot" style="background:#E2E8F0"></span> Light Executive</button>
+                        </div>
+                    </div>
+                    <span style="font-size:12px;color:var(--text-muted)">Última carga: —</span>
                 </div>
             </header>
 
-            <section class="filters-section filters-bar">
-                <div class="filter-group">
-                    <label>Mês de Ref.</label>
-                    <select id="filter-mes" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
+            <div class="page-body">
+                <!-- Filters -->
+                <div class="filters-bar">
+                    <div class="filter">
+                        <label class="filter-label">Mês de Ref.</label>
+                        <select id="filter-mes" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
+                    </div>
+                    <div class="filter">
+                        <label class="filter-label">Diretor</label>
+                        <select id="filter-diretor" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
+                    </div>
+                    <div class="filter">
+                        <label class="filter-label">Gerente</label>
+                        <select id="filter-gerente" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label>Diretor</label>
-                    <select id="filter-diretor" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
-                </div>
-                <div class="filter-group">
-                    <label>Gerente</label>
-                    <select id="filter-gerente" onchange="carregarAnaliseLinha()"><option value="">Todos</option></select>
-                </div>
-            </section>
 
-            <section class="table-section">
-                <div class="table-header">
-                    <h2>Visão por Linha</h2>
+                <!-- Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">Visão por Linha</h3>
+                            <div class="card-subtitle">Valores por categoria · subtotais destacam totais de grupo</div>
+                        </div>
+                    </div>
+                    <div class="tbl-wrap">
+                        <table class="comparativo-table linha-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Descrição</th>
+                                    <th class="col-num">Orçado</th>
+                                    <th class="col-num">Prévia</th>
+                                    <th class="col-num">Δ R$</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analise-linha-body">
+                                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px">Carregando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="table-container">
-                    <table class="data-table comparativo-table">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Descrição</th>
-                                <th class="col-num">Orçado</th>
-                                <th class="col-num">Prévia</th>
-                                <th class="col-num">Δ R$</th>
-                            </tr>
-                        </thead>
-                        <tbody id="analise-linha-body">
-                            <tr><td colspan="5" style="text-align:center;">Carregando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+            </div>
         </main>
     </div>
 

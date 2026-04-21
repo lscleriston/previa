@@ -13,6 +13,18 @@ PREVIA é uma plataforma de forecast financeiro para MSP que compara valores or�
 - Exibe resumos por CR e permite drill-down em lançamentos detalhados
 - Mantém histórico de orçado, prévia e ajustes gerenciais
 
+## Tecnologias utilizadas
+
+- Python 3.12: linguagem principal para backend, ETL e scripts auxiliares
+- FastAPI: framework web para API REST e endpoints de upload/ETL
+- Uvicorn: servidor ASGI leve para execução da aplicação backend
+- SQLite: banco de dados embarcado usado para armazenar dimensões, previsões, oportunidades e relatórios
+- Openpyxl: leitura e processamento dos arquivos Excel de forecast e orçado
+- Passlib + bcrypt: hash de senhas e autenticação segura
+- Python-JOSE: geração e validação de tokens JWT para controle de acesso
+- HTML / CSS / JavaScript: frontend estático para dashboard e interações do usuário
+- Docker + Docker Compose: empacotamento e orquestração dos containers de backend e frontend
+
 ## Pré-requisitos
 
 - Docker

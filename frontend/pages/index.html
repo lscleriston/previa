@@ -3,128 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forecast App</title>
+    <title>Visão Geral — PREVIA</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
+
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="logo">
-                <h2>Forecast Pro</h2>
+            <div class="sidebar-brand">
+                <div class="brand-mark">P</div>
+                <div class="brand-wordmark">PREVIA</div>
             </div>
-            <nav class="nav-menu">
-                <a href="index.html" class="active">Visão Geral</a>
-                <a href="cr_analysis.html">Análise por CR</a>
-                <a href="analise_linha.html">Análise por Linha</a>
-                <a href="atualizar.html">Atualizar Dados</a>
-                <a href="admin_users.html">Admin Usuários</a>
+            <div class="sidebar-section-label">Workspace</div>
+            <nav class="sidebar-nav nav-menu">
+                <a href="index.html" class="nav-item active">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+                    <span>Visão Geral</span>
+                </a>
+                <a href="cr_analysis.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
+                    <span>Análise por CR</span>
+                </a>
+                <a href="analise_linha.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="13" width="18" height="5" rx="1"/></svg>
+                    <span>Análise por Linha</span>
+                </a>
+                <a href="atualizar.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V5"/><path d="M7 10l5-5 5 5"/><path d="M4 19h16"/></svg>
+                    <span>Atualizar Dados</span>
+                </a>
+                <a href="admin_users.html" class="nav-item">
+                    <svg class="nav-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M15 20c0-2.5 2-4 4-4"/></svg>
+                    <span>Admin Usuários</span>
+                </a>
             </nav>
+            <div class="sidebar-footer">
+                <div class="avatar">CL</div>
+                <div class="user-meta">
+                    <div class="user-name">Previa Pro</div>
+                    <div class="user-role">MSP Forecast</div>
+                </div>
+            </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="header">
+            <header class="topbar">
                 <div>
-                    <h1>Visão Geral do Forecast</h1>
-                    <p class="subtitle">Última atualização: <span id="last-update">--</span></p>
+                    <h1 class="page-title">Visão Geral</h1>
+                    <p class="page-subtitle">Panorama executivo · Última atualização: <span id="last-update">—</span></p>
                 </div>
-                <div class="header-actions">
+                <div class="topbar-actions">
                     <div class="theme-switcher">
                         <button class="theme-btn" type="button" title="Tema">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                              <circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.2"/>
-                              <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                            </svg>
+                            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
                         </button>
                         <div class="theme-menu" id="theme-menu">
-                            <button type="button" data-theme="dark-default">
-                              <span class="theme-dot" style="background:#1A1D27"></span> Padrão
-                            </button>
-                            <button type="button" data-theme="slate-corporate">
-                              <span class="theme-dot" style="background:#141720"></span> Slate Corporate
-                            </button>
-                            <button type="button" data-theme="midnight-green">
-                              <span class="theme-dot" style="background:#111815"></span> Midnight Green
-                            </button>
-                            <button type="button" data-theme="charcoal-brand">
-                              <span class="theme-dot" style="background:#181B1F"></span> Charcoal Brand
-                            </button>
-                            <button type="button" data-theme="light-executive">
-                              <span class="theme-dot" style="background:#E2E8F0"></span> Light Executive
-                            </button>
+                            <button type="button" data-theme="dark-default"><span class="theme-dot" style="background:#1A1D27"></span> Padrão</button>
+                            <button type="button" data-theme="slate-corporate"><span class="theme-dot" style="background:#141720"></span> Slate Corporate</button>
+                            <button type="button" data-theme="midnight-green"><span class="theme-dot" style="background:#111815"></span> Midnight Green</button>
+                            <button type="button" data-theme="charcoal-brand"><span class="theme-dot" style="background:#181B1F"></span> Charcoal Brand</button>
+                            <button type="button" data-theme="light-executive"><span class="theme-dot" style="background:#E2E8F0"></span> Light Executive</button>
                         </div>
                     </div>
-                    <button class="btn-primary" onclick="atualizarDados()">Importar Prévia</button>
+                    <button class="btn btn-primary btn-sm" onclick="atualizarDados()">Importar Prévia</button>
                 </div>
             </header>
 
-            <section class="filters-section">
-                <div class="filter-group">
-                    <label>Gerente</label>
-                    <select id="filter-gerente" onchange="carregarResumo()"><option value="">Todos</option></select>
+            <div class="page-body">
+                <!-- Filters -->
+                <div class="filters-bar">
+                    <div class="filter">
+                        <label class="filter-label">Gerente</label>
+                        <select id="filter-gerente" onchange="carregarResumo()"><option value="">Todos</option></select>
+                    </div>
+                    <div class="filter">
+                        <label class="filter-label">País</label>
+                        <select id="filter-pais" onchange="carregarResumo()"><option value="">Todos</option></select>
+                    </div>
+                    <div class="filter">
+                        <label class="filter-label">Cliente</label>
+                        <select id="filter-cliente" onchange="carregarResumo()"><option value="">Todos</option></select>
+                    </div>
+                    <div class="filter">
+                        <label class="filter-label">Prática</label>
+                        <select id="filter-pratica" onchange="carregarResumo()"><option value="">Todas</option></select>
+                    </div>
+                    <div class="filter">
+                        <label class="filter-label">Categoria</label>
+                        <select id="filter-produto" onchange="carregarResumo()"><option value="">Todos</option></select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label>País</label>
-                    <select id="filter-pais" onchange="carregarResumo()"><option value="">Todos</option></select>
-                </div>
-                <div class="filter-group">
-                    <label>Cliente</label>
-                    <select id="filter-cliente" onchange="carregarResumo()"><option value="">Todos</option></select>
-                </div>
-                <div class="filter-group">
-                    <label>Prática</label>
-                    <select id="filter-pratica" onchange="carregarResumo()"><option value="">Todas</option></select>
-                </div>
-                <div class="filter-group">
-                    <label>Categoria</label>
-                    <select id="filter-produto" onchange="carregarResumo()"><option value="">Todos</option></select>
-                </div>
-            </section>
 
-            <section class="kpi-grid">
-                <div class="kpi-card">
-                    <h3>Total Oportunidades</h3>
-                    <p class="kpi-value" id="kpi-total-opp">0</p>
+                <!-- KPIs -->
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Oportunidades</div>
+                        <div class="kpi-value" id="kpi-total-opp">—</div>
+                        <div class="kpi-meta">em pipeline ativo</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Receita Líquida (Forecast)</div>
+                        <div class="kpi-value mono" id="kpi-rl-forecast">—</div>
+                        <div class="kpi-meta">Forecast 2026</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Receita Bruta</div>
+                        <div class="kpi-value mono" id="kpi-rb-total">—</div>
+                        <div class="kpi-meta">Total consolidado</div>
+                    </div>
                 </div>
-                <div class="kpi-card">
-                    <h3>Receita Líquida (Forecast)</h3>
-                    <p class="kpi-value text-blue" id="kpi-rl-forecast">R$ 0,00</p>
-                </div>
-                <div class="kpi-card">
-                    <h3>Receita Bruta</h3>
-                    <p class="kpi-value text-green" id="kpi-rb-total">R$ 0,00</p>
-                </div>
-            </section>
 
-            <section class="table-section">
-                <div class="table-header">
-                    <h3>Oportunidades (Top 50)</h3>
+                <!-- Opportunities Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">Oportunidades · Top 50</h3>
+                            <div class="card-subtitle">Ordenado por receita líquida · Forecast ativo</div>
+                        </div>
+                    </div>
+                    <div class="tbl-wrap">
+                        <table class="tbl" id="opp-table">
+                            <thead>
+                                <tr>
+                                    <th>Gerente Comercial</th>
+                                    <th>País</th>
+                                    <th>Cliente</th>
+                                    <th>Prática / Produto</th>
+                                    <th class="num-h">Receita Líquida</th>
+                                    <th class="num-h">Receita Bruta</th>
+                                    <th style="text-align:right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="opp-body">
+                                <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px">Carregando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="table-responsive">
-                    <table id="opp-table">
-                        <thead>
-                            <tr>
-                                <th>Gerente Comercial</th>
-                                <th>País</th>
-                                <th>Cliente</th>
-                                <th>Prática / Produto</th>
-                                <th>Receita Líquida</th>
-                                <th>Receita Bruta</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="opp-body">
-                            <!-- JS preenche as linhas aqui -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+            </div>
         </main>
     </div>
 
-    <!-- Scripts -->
     <script src="/js/auth.js"></script>
     <script src="/js/app.js"></script>
 </body>

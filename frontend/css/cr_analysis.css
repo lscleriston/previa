@@ -1,294 +1,254 @@
+/* =========================================================
+   PREVIA — CR Analysis & DRE Panel Styles
+   ========================================================= */
+
+/* Filters bar override for this page (already in styles.css) */
 .filters-bar {
-    display: flex;
-    gap: 20px;
-    padding: 16px 24px;
-    background-color: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
+/* KPI row with 4 columns */
 .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    margin-bottom: 32px;
+  grid-template-columns: repeat(4, 1fr);
 }
 
-.kpi-card {
-    background-color: var(--bg-card);
-    padding: 24px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-}
-
-.kpi-title {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-
-.kpi-value {
-    color: var(--text-primary);
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.kpi-value.green { color: var(--accent-green); }
-.kpi-value.red { color: var(--accent-red); }
-
-.kpi-label {
-    color: var(--text-muted);
-    font-size: 0.75rem;
-}
-
-.col-num {
-    text-align: right;
-}
-
-.val-pos { color: var(--accent-green) !important; font-weight: 500; }
-.val-neg { color: var(--accent-red) !important; font-weight: 500; }
-
-.badge-warning {
-    background: rgba(245, 158, 11, 0.1);
-    color: var(--accent-yellow);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-}
-
-.dre-container {
-    padding: 24px;
-    background: var(--bg-hover);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    margin: 12px 24px;
-}
-
-.dre-header {
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    color: var(--text-primary);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 12px;
-}
-
-.dre-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-    margin-bottom: 32px;
-}
-
-.dre-box {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 16px;
-}
-
-.dre-box h4 {
-    color: var(--text-secondary);
-    margin-top: 0;
-    margin-bottom: 16px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.dre-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px dashed var(--border-color);
-    font-size: 0.9rem;
-}
-
-.dre-row:last-child {
-    border-bottom: none;
-}
-
-.dre-row.total {
-    font-weight: 600;
-    border-top: 1px solid var(--border-color);
-    border-bottom: none;
-    margin-top: 8px;
-    padding-top: 12px;
-    color: var(--accent-blue);
-}
-
-.table-section .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.table-section .data-table th,
-.table-section .data-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.32);
-}
-
-.table-section .data-table th {
-    text-align: left;
-    color: var(--text-secondary);
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-}
-
-.table-section .data-table th.col-num {
-    text-align: right;
-}
-
-.table-section .data-table th:nth-child(2),
-.table-section .data-table td:nth-child(2) {
-    text-align: center;
-}
-
-.table-section .data-table td {
-    text-align: right;
-    font-size: 0.9rem;
-}
-
-.table-section .data-table td:first-child {
-    text-align: left;
-    font-weight: 500;
-}
-
-.table-section .data-table tr:last-child td {
-    border-bottom: none;
-}
-
+/* =========================================================
+   MAIN DATA TABLE (comparativo-table → tbl)
+   ========================================================= */
+.data-table,
 .comparativo-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
 
-.comparativo-table th {
-    text-align: right;
-    padding: 7px 14px;
-    color: var(--text-secondary);
-    font-weight: 500;
-    border-bottom: 1px solid var(--border-color);
+.data-table thead th,
+.comparativo-table thead th {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-surface);
+  white-space: nowrap;
+  text-align: left;
 }
 
-.comparativo-table th:first-child { text-align: left; }
-
-.comparativo-table td {
-    text-align: right;
-    padding: 7px 14px;
-    border-bottom: 1px dashed var(--border-color);
-    font-size: 12px;
+.data-table thead th.col-num,
+.comparativo-table thead th.col-num,
+.data-table thead th:nth-child(n+3),
+.comparativo-table thead th:not(:first-child):not(:nth-child(2)) {
+  text-align: right;
 }
 
-.comparativo-table td:first-child { text-align: left; font-weight: 500; }
-
-.compare-row td {
-    padding: 5px 14px;
+/* Descrição CR column — center aligned */
+.data-table thead th:nth-child(2),
+.comparativo-table thead th:nth-child(2) {
+  text-align: center;
 }
 
-.dre-line td {
-    padding: 3px 0;
+.data-table tbody td,
+.comparativo-table tbody td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border-faint);
+  color: var(--text-primary);
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-.comparativo-table tr.compare-row td:first-child {
-    padding-left: 18px;
+.data-table tbody td:first-child,
+.comparativo-table tbody td:first-child {
+  text-align: left;
+  font-weight: 500;
 }
 
-.comparativo-table tr.subtotal td:first-child {
-    padding-left: 0;
+.data-table tbody td:nth-child(2),
+.comparativo-table tbody td:nth-child(2) {
+  text-align: center;
 }
 
+.data-table tbody tr:last-child td,
+.comparativo-table tbody tr:last-child td { border-bottom: none; }
+
+.data-table tbody tr:hover td,
+.comparativo-table tbody tr.clickable:hover td {
+  background: var(--bg-hover);
+}
+
+.comparativo-table tr.clickable { cursor: pointer; }
+.comparativo-table tr.compare-row td { padding: 9px 16px; }
+.comparativo-table tr.compare-row td:first-child { padding-left: 28px; }
+
+/* Subtotal rows */
 .comparativo-table tr.subtotal td {
-    font-size: 12.5px;
+  font-weight: 650;
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface);
+  font-size: 13px;
+}
+.comparativo-table tr.subtotal.rl td { color: var(--accent); }
+.comparativo-table tr.subtotal.mc td { color: var(--positive); }
+.comparativo-table tr.subtotal.mc.negative td { color: var(--negative); }
+
+/* Drill icon */
+.drill-icon {
+  margin-right: 8px;
+  display: inline-block;
+  width: 16px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
-.bar-container {
-    width: 100%;
-    height: 6px;
-    background: var(--bg-dark);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-top: 4px;
-    border: 1px solid var(--border-color);
-}
-
-.bar-fill {
-    height: 100%;
-    border-radius: 3px;
-}
-
-.comparativo-table tr.clickable {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.comparativo-table tr.clickable:hover {
-    background: var(--bg-hover);
-}
-
+/* =========================================================
+   EXPANDABLE DRE DETAILS (generated by JS)
+   ========================================================= */
 .comparativo-details-row td {
-    background: var(--bg-hover);
-    padding: 10px;
+  padding: 0 !important;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border) !important;
 }
 
 .comparativo-details-box {
-    padding: 12px;
-    background: var(--bg-hover);
-    font-size: 12px;
-    border-radius: 12px;
+  padding: 20px 24px;
+  background: var(--bg-subtle);
+  font-size: 12px;
 }
 
 .comparativo-details-table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .comparativo-details-table th,
 .comparativo-details-table td {
-    padding: 10px 8px;
-    border-bottom: 1px solid var(--border-color);
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-faint);
+  font-size: 12.5px;
 }
 
 .comparativo-details-table th {
-    text-align: left;
-    color: var(--text-secondary);
+  text-align: left;
+  color: var(--text-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--bg-surface);
 }
 
-.comparativo-details-table td:last-child {
-    text-align: right;
+.comparativo-details-table td { color: var(--text-primary); }
+.comparativo-details-table td:last-child { text-align: right; font-family: var(--font-mono); }
+.comparativo-details-table tr:last-child td { border-bottom: none; }
+.comparativo-details-empty { color: var(--text-muted); font-style: italic; }
+
+/* =========================================================
+   DRE CONTAINER (generated by JS for expanded CR rows)
+   ========================================================= */
+.dre-panel,
+.dre-container {
+  padding: 20px 24px 24px;
+  background: var(--bg-subtle);
 }
 
-.drill-icon {
-    margin-right: 8px;
-    display: inline-block;
-    width: 18px;
-    text-align: center;
-    font-weight: 700;
+.dre-panel-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.dre-panel-title,
+.dre-header {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  margin: 0 0 14px;
+  padding: 0;
+  border: none;
+  background: none;
 }
 
-.subtotal td {
-    font-weight: 700;
-    border-top: 1px solid var(--border-color);
+/* 4-column DRE grid */
+.dre-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 0.8fr;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
-.subtotal.rl td {
-    color: var(--accent-blue);
+.dre-grid > .dre-h {
+  padding: 9px 14px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+.dre-grid > .dre-h:not(:first-child) { text-align: right; }
+
+.dre-grid > .dre-cell {
+  padding: 9px 14px;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--border-faint);
+  color: var(--text-primary);
+}
+.dre-grid > .dre-cell.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 450;
+}
+.dre-grid > .dre-cell.label { color: var(--text-secondary); }
+.dre-grid > .dre-cell.strong { font-weight: 650; color: var(--text-primary); background: var(--bg-subtle); }
+.dre-grid .dre-row-final { background: var(--accent-faint) !important; }
+
+/* Legacy two-column DRE (dre-box layout) */
+.dre-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.dre-box h4 {
+  color: var(--text-label);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 12px;
+}
+.dre-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--border-faint);
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+.dre-row:last-child { border-bottom: none; }
+.dre-row .label { color: var(--text-secondary); }
+.dre-row .value { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.dre-row.total {
+  font-weight: 650;
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  margin-top: 6px;
+  padding-top: 10px;
+  color: var(--accent);
 }
 
-.subtotal.mc td {
-    color: var(--accent-green);
-}
-
-.subtotal.mc.negative td {
-    color: var(--accent-red);
-}
-
-.comparativo-details-empty {
-    color: var(--text-muted);
-}
+/* =========================================================
+   ANÁLISE POR LINHA — comparativo table variant
+   ========================================================= */
+.comparativo-table.linha-table thead th:not(:first-child) { text-align: right; }
+.comparativo-table.linha-table td:not(:first-child) { text-align: right; }
+.comparativo-table.linha-table td:nth-child(2) { text-align: left; color: var(--text-secondary); }
+.comparativo-table.linha-table thead th:nth-child(2) { text-align: left; }
