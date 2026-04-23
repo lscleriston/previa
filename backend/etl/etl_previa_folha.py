@@ -72,9 +72,8 @@ def run_etl():
         if not cr or cr.lower() == 'cr':
             continue
 
-        valor = 0.0
-        for cell in row[2:]:
-            valor += parse_float(cell)
+        # Considera apenas a coluna C (indice 2) da aba TH.
+        valor = parse_float(row[2] if len(row) > 2 else None)
 
         if valor == 0.0:
             continue
