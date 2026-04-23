@@ -143,18 +143,23 @@ async function carregarCRs() {
 function atualizarKPIs(data) {
     const totalRL_orcado = data.reduce((s, i) => s + (i.rl_orcado ?? 0), 0);
     const totalRL_previa = data.reduce((s, i) => s + (i.total_rl ?? 0), 0);
-    const desvio = totalRL_previa - totalRL_orcado;
-    const pct = totalRL_orcado > 0 ? (desvio / totalRL_orcado) * 100 : 0;
+
+    const totalMc = data.reduce((acc, item) => {
+        const { mc_orcado, mc_previa } = deriveMcPercent(item);
+        acc.orcado += mc_orcado;
+        acc.previa += mc_previa;
+        return acc;
+    }, { orcado: 0, previa: 0 });
 
     document.getElementById('kpi-total-crs').textContent = data.length;
     document.getElementById('kpi-rl-orcado').textContent = formatMillions(totalRL_orcado);
     document.getElementById('kpi-rl-previa').textContent = formatMillions(totalRL_previa);
     
     const kpiDesvio = document.getElementById('kpi-desvio');
-    kpiDesvio.textContent = (pct > 0 ? '+' : '') + pct.toFixed(1) + '%';
-    kpiDesvio.className = 'kpi-value ' + (pct >= 0 ? 'green' : 'red');
+    kpiDesvio.textContent = formatMillions(totalMc.previa);
+    kpiDesvio.className = 'kpi-value ' + (totalMc.previa >= 0 ? 'green' : 'red');
     
-    document.getElementById('kpi-desvio-label').textContent = pct >= 0 ? 'Prévia acima do orçado' : 'Prévia abaixo do orçado';
+    document.getElementById('kpi-desvio-label').textContent = 'MC total da prévia';
 }
 
 function deriveMcPercent(item) {
@@ -207,7 +212,7 @@ function deriveMcPercent(item) {
     const mc_pct_orcado = rl_orcado ? (mc_orcado / rl_orcado) * 100 : 0;
     const mc_pct_previa = rl_previa ? (mc_previa / rl_previa) * 100 : 0;
 
-    return { mc_pct_orcado, mc_pct_previa };
+    return { mc_orcado, mc_previa, mc_pct_orcado, mc_pct_previa };
 }
 
 function renderTable() {
@@ -220,12 +225,10 @@ function renderTable() {
         tr.id = `row-${item.cr}`;
         tr.onclick = () => toggleDRE(item.cr);
 
-        const { mc_pct_orcado, mc_pct_previa } = deriveMcPercent(item);
+        const { mc_orcado, mc_previa, mc_pct_orcado, mc_pct_previa } = deriveMcPercent(item);
         const desvio = mc_pct_previa - mc_pct_orcado;
-        const pct = mc_pct_orcado > 0
-            ? ((desvio / mc_pct_orcado) * 100)
-            : null;
-        const pctDisplay = pct !== null ? (pct > 0 ? '+' : '') + pct.toFixed(1) + '%' : '—';
+        const deltaValor = mc_previa - mc_orcado;
+        const deltaValorDisplay = (deltaValor > 0 ? '+' : '') + formatCurrency(deltaValor);
 
         const atingimento = mc_pct_orcado > 0
             ? ((mc_pct_previa / mc_pct_orcado) * 100)
@@ -237,16 +240,13 @@ function renderTable() {
 
         const desvioClass = isBelowOrcado ? 'val-neg' : desvio > 0 ? 'val-pos' : '';
         const mcPrevColorClass = isBelowOrcado ? 'val-neg' : '';
-
-        let pctHtml = pctDisplay;
-        if (pct !== null && Math.abs(pct) < 5 && mc_pct_orcado > 0) {
-            pctHtml = `<span class="badge-warning">${pctHtml}</span>`;
-        }
+        const deltaValorClass = deltaValor < 0 ? 'val-neg' : deltaValor > 0 ? 'val-pos' : '';
 
         const isExpanded = expandedCRs.has(item.cr);
         const icon = isExpanded ? '▼' : '▶';
         const mcPrevInlineColor = isBelowOrcado ? 'var(--negative)' : 'var(--text-primary)';
         const desvioInlineColor = isBelowOrcado ? 'var(--negative)' : 'var(--text-primary)';
+        const deltaValorInlineColor = deltaValor < 0 ? 'var(--negative)' : deltaValor > 0 ? 'var(--positive)' : 'var(--text-primary)';
 
         tr.innerHTML = `
             <td style="font-weight: 500;">
@@ -257,7 +257,7 @@ function renderTable() {
             <td class="col-num">${mc_pct_orcado.toFixed(1)}%</td>
             <td class="col-num ${mcPrevColorClass}" style="font-weight: 500; color: ${mcPrevInlineColor};">${mc_pct_previa.toFixed(1)}%</td>
             <td class="col-num ${desvioClass}" style="color: ${desvioInlineColor};">${desvio > 0 ? '+' : ''}${desvio.toFixed(1)}pp</td>
-            <td class="col-num">${pctHtml}</td>
+            <td class="col-num ${deltaValorClass}" style="color: ${deltaValorInlineColor};">${deltaValorDisplay}</td>
             <td class="col-num">
                 <div style="display:flex; flex-direction:column; align-items:flex-end;">
                     <span style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2px;">${atingDisplay}</span>
