@@ -233,12 +233,10 @@ function renderTable() {
         const barWidth = atingimento !== null ? Math.min(Math.max(atingimento, 0), 100) : 0;
         const barColor = atingimento >= 100 ? '#15803D' : atingimento >= 80 ? '#B45309' : '#BE123C';
         const atingDisplay = atingimento !== null ? atingimento.toFixed(0) + '%' : '—';
+        const isBelowOrcado = mc_pct_previa < mc_pct_orcado;
 
-        let desvioClass = '';
-        if (desvio > 0) desvioClass = 'val-pos';
-        else if (desvio < 0) desvioClass = 'val-neg';
-
-        const mcPrevColorClass = mc_pct_previa < mc_pct_orcado ? 'val-neg' : '';
+        const desvioClass = isBelowOrcado ? 'val-neg' : desvio > 0 ? 'val-pos' : '';
+        const mcPrevColorClass = isBelowOrcado ? 'val-neg' : '';
 
         let pctHtml = pctDisplay;
         if (pct !== null && Math.abs(pct) < 5 && mc_pct_orcado > 0) {
@@ -247,6 +245,8 @@ function renderTable() {
 
         const isExpanded = expandedCRs.has(item.cr);
         const icon = isExpanded ? '▼' : '▶';
+        const mcPrevInlineColor = isBelowOrcado ? 'var(--negative)' : 'var(--text-primary)';
+        const desvioInlineColor = isBelowOrcado ? 'var(--negative)' : 'var(--text-primary)';
 
         tr.innerHTML = `
             <td style="font-weight: 500;">
@@ -255,8 +255,8 @@ function renderTable() {
             </td>
             <td style="color: var(--text-secondary);">${item.des_cr || '-'}</td>
             <td class="col-num">${mc_pct_orcado.toFixed(1)}%</td>
-            <td class="col-num ${mcPrevColorClass}" style="font-weight: 500;">${mc_pct_previa.toFixed(1)}%</td>
-            <td class="col-num ${desvioClass}">${desvio > 0 ? '+' : ''}${desvio.toFixed(1)}pp</td>
+            <td class="col-num ${mcPrevColorClass}" style="font-weight: 500; color: ${mcPrevInlineColor};">${mc_pct_previa.toFixed(1)}%</td>
+            <td class="col-num ${desvioClass}" style="color: ${desvioInlineColor};">${desvio > 0 ? '+' : ''}${desvio.toFixed(1)}pp</td>
             <td class="col-num">${pctHtml}</td>
             <td class="col-num">
                 <div style="display:flex; flex-direction:column; align-items:flex-end;">
