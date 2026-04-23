@@ -382,9 +382,9 @@ def get_resumo_por_cr(filtros):
                             "categoria": categoria,
                             "valor": valor
                         })
-            cr['pessoal_previa'] = (
-                folha_previas.get(cr_sap, 0.0) + folha_previas.get(cr_code, 0.0)
-            )
+            # Evita dupla contagem quando CR_SAP e Cod_Cr são iguais.
+            pessoal_keys = {k for k in (cr_sap, cr_code) if k}
+            cr['pessoal_previa'] = sum(folha_previas.get(k, 0.0) for k in pessoal_keys)
 
         return crs
 
