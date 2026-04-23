@@ -88,7 +88,7 @@ function processItem(item) {
     flat.pessoal_orcado = getOrc('Pessoal');
     flat.custo_direto_orcado = getOrc('Custo Direto + Rateios + Recuperação de Custos') || 0;
     flat.rateio_orcado = getOrc('Rateio');
-    flat.recuperacao_orcado = Math.abs(getOrc('Recuperação Outros Gastos')) + Math.abs(getOrc('Recuperação Pessoal'));
+    flat.recuperacao_orcado = getOrc('Recuperação Outros Gastos') + getOrc('Recuperação Pessoal');
     flat.mc_orcado = getOrc('Margem de Contribuição');
     flat.mc_pct_orcado = getOrc('MC %') * 100;
 
@@ -194,8 +194,8 @@ function deriveMcPercent(item) {
         { label: '(-) Utilidades', orc: getOrc('Utilidades'), pre: getPrevia('Utilidades') },
         { label: '(-) Viagens', orc: getOrc('Viagens'), pre: getPrevia('Viagens') },
         { label: '(-) Rateios', orc: item.rateio_orcado ?? getOrc('Rateio'), pre: item.rateio_previa ?? getPrevia('Rateio') },
-        { label: '(+) Rec. Outros Gastos', orc: Math.abs(item.recuperacao_orcado ?? getOrc('Recuperação Outros Gastos')), pre: Math.abs(item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos')) },
-        { label: '(+) Rec. Pessoal', orc: Math.abs(getOrc('Recuperação Pessoal')), pre: Math.abs(getPrevia('Recuperação Pessoal')) }
+        { label: '(+) Rec. Outros Gastos', orc: item.recuperacao_orcado ?? getOrc('Recuperação Outros Gastos'), pre: item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos') },
+        { label: '(+) Rec. Pessoal', orc: getOrc('Recuperação Pessoal'), pre: getPrevia('Recuperação Pessoal') }
     ];
 
     const costTotalOrcado = lineValues.reduce((sum, line) => sum + line.orc, 0);
@@ -204,8 +204,8 @@ function deriveMcPercent(item) {
     const mc_orcado = item.mc_orcado ?? (rl_orcado + costTotalOrcado);
     const mc_previa = item.mc_previa ?? (rl_previa + costTotalPrevia);
 
-    const mc_pct_orcado = item.mc_pct_orcado ?? (rl_orcado ? (mc_orcado / rl_orcado) * 100 : 0);
-    const mc_pct_previa = item.mc_pct_previa ?? (rl_previa ? (mc_previa / rl_previa) * 100 : 0);
+    const mc_pct_orcado = rl_orcado ? (mc_orcado / rl_orcado) * 100 : 0;
+    const mc_pct_previa = rl_previa ? (mc_previa / rl_previa) * 100 : 0;
 
     return { mc_pct_orcado, mc_pct_previa };
 }
@@ -376,8 +376,8 @@ function renderDRE(item) {
         { label: '(-) Utilidades', orc: getOrcado('Utilidades'), pre: getPrevia('Utilidades'), slug: categorySlugs['Utilidades'], apiKey: 'Utilidades', isPos: false, type: 'custo', clickable: getPrevia('Utilidades') !== 0 },
         { label: '(-) Viagens', orc: getOrcado('Viagens'), pre: getPrevia('Viagens'), slug: categorySlugs['Viagens'], apiKey: 'Viagens', isPos: false, type: 'custo', clickable: getPrevia('Viagens') !== 0 },
         { label: '(-) Rateios', orc: item.rateio_orcado ?? getOrcado('Rateio'), pre: item.rateio_previa ?? getPrevia('Rateio'), slug: categorySlugs['Rateio'], apiKey: 'Rateio', isPos: false, type: 'custo', clickable: (item.rateio_previa ?? getPrevia('Rateio')) !== 0 },
-        { label: '(+) Rec. Outros Gastos', orc: Math.abs(item.recuperacao_orcado ?? getOrcado('Recuperação Outros Gastos')), pre: Math.abs(item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos')), slug: categorySlugs['Recuperação Outros Gastos'], apiKey: 'Recuperação Outros Gastos', isPos: true, type: 'receita', clickable: (item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos')) !== 0 },
-        { label: '(+) Rec. Pessoal', orc: Math.abs(getOrcado('Recuperação Pessoal')), pre: Math.abs(getPrevia('Recuperação Pessoal')), slug: categorySlugs['Recuperação Pessoal'], apiKey: 'Recuperação Pessoal', isPos: true, type: 'receita', clickable: getPrevia('Recuperação Pessoal') !== 0 }
+        { label: '(+) Rec. Outros Gastos', orc: item.recuperacao_orcado ?? getOrcado('Recuperação Outros Gastos'), pre: item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos'), slug: categorySlugs['Recuperação Outros Gastos'], apiKey: 'Recuperação Outros Gastos', isPos: true, type: 'receita', clickable: (item.recuperacao_previa ?? getPrevia('Recuperação Outros Gastos')) !== 0 },
+        { label: '(+) Rec. Pessoal', orc: getOrcado('Recuperação Pessoal'), pre: getPrevia('Recuperação Pessoal'), slug: categorySlugs['Recuperação Pessoal'], apiKey: 'Recuperação Pessoal', isPos: true, type: 'receita', clickable: getPrevia('Recuperação Pessoal') !== 0 }
     ];
 
     const corDelta = (valor, tipo) => {
@@ -393,8 +393,8 @@ function renderDRE(item) {
 
     const mc_orcado = item.mc_orcado ?? (rl_orcado + costTotalOrcado);
     const mc_previa = item.mc_previa ?? (rl_previa + costTotalPrevia);
-    const mc_pct_orcado = item.mc_pct_orcado ?? 0;
-    const mc_pct_previa = item.mc_pct_previa ?? (rl_previa ? (mc_previa / rl_previa) * 100 : 0);
+    const mc_pct_orcado = rl_orcado ? (mc_orcado / rl_orcado) * 100 : 0;
+    const mc_pct_previa = rl_previa ? (mc_previa / rl_previa) * 100 : 0;
 
     lineValues.push({ label: '= Custo Total', orc: costTotalOrcado, pre: costTotalPrevia, subtotal: 'cost', isPos: true, type: 'custo' });
     lineValues.push({ label: '= Margem Contribuição', orc: mc_orcado, pre: mc_previa, subtotal: 'mc', isPos: true, type: 'receita', clickable: false });
