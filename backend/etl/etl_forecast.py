@@ -272,6 +272,7 @@ def run_etl():
         carregadas = 0
         ignoradas = 0
         ignored_details = []
+        cleaned_valores_keys = set()
         cr_4000020240 = {
             'found': False,
             'with_key': False,
@@ -332,22 +333,44 @@ def run_etl():
                                 opp['descricao_oportunidade'], opp['status_comercial'], opp['cr'], opp['cr2'], opp['moeda'],
                                 opp['data_inicio_contrato'], opp['data_fim_contrato'], agora, XLSX_PATH))
 
-                cursor.execute('DELETE FROM forecast_valores WHERE chave_ek = ?', (opp['chave_ek'],))
+                # Limpa valores da chave apenas uma vez por execução do ETL.
+                # Evita apagar valores válidos quando a mesma chave_ek aparece em linhas duplicadas.
+                if opp['chave_ek'] not in cleaned_valores_keys:
+                    cursor.execute('DELETE FROM forecast_valores WHERE chave_ek = ?', (opp['chave_ek'],))
+                    cleaned_valores_keys.add(opp['chave_ek'])
 
                 meses = ['01','02','03','04','05','06','07','08','09','10','11','12']
                 for m_idx, mes in enumerate(meses):
                     v_rl_25 = parse_float(get_cell(row, 34 + m_idx)) if len(row) > 34 + m_idx else 0.0
                     v_rb_25 = parse_float(get_cell(row, 60 + m_idx)) if len(row) > 60 + m_idx else 0.0
                     if v_rl_25 != 0 or v_rb_25 != 0:
-                        cursor.execute('INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb, semana_carga) VALUES (?,?,?,?,?,?)',
-                                       (opp['chave_ek'], 'Forecast', f'2025-{mes}', v_rl_25, v_rb_25, agora))
+                        mes_ref = f'2025-{mes}'
+                        cursor.execute(
+                            'UPDATE forecast_valores SET valor_rl = COALESCE(valor_rl, 0) + ?, valor_rb = COALESCE(valor_rb, 0) + ?, semana_carga = ? '
+                            'WHERE chave_ek = ? AND cenario = ? AND mes_ref = ?',
+                            (v_rl_25, v_rb_25, agora, opp['chave_ek'], 'Forecast', mes_ref)
+                        )
+                        if cursor.rowcount == 0:
+                            cursor.execute(
+                                'INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb, semana_carga) VALUES (?,?,?,?,?,?)',
+                                (opp['chave_ek'], 'Forecast', mes_ref, v_rl_25, v_rb_25, agora)
+                            )
 
                 for m_idx, mes in enumerate(meses):
                     v_rl_26 = parse_float(get_cell(row, 47 + m_idx)) if len(row) > 47 + m_idx else 0.0
                     v_rb_26 = parse_float(get_cell(row, 125 + m_idx)) if len(row) > 125 + m_idx else 0.0
                     if v_rl_26 != 0 or v_rb_26 != 0:
-                        cursor.execute('INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb, semana_carga) VALUES (?,?,?,?,?,?)',
-                                       (opp['chave_ek'], 'Forecast', f'2026-{mes}', v_rl_26, v_rb_26, agora))
+                        mes_ref = f'2026-{mes}'
+                        cursor.execute(
+                            'UPDATE forecast_valores SET valor_rl = COALESCE(valor_rl, 0) + ?, valor_rb = COALESCE(valor_rb, 0) + ?, semana_carga = ? '
+                            'WHERE chave_ek = ? AND cenario = ? AND mes_ref = ?',
+                            (v_rl_26, v_rb_26, agora, opp['chave_ek'], 'Forecast', mes_ref)
+                        )
+                        if cursor.rowcount == 0:
+                            cursor.execute(
+                                'INSERT INTO forecast_valores (chave_ek, cenario, mes_ref, valor_rl, valor_rb, semana_carga) VALUES (?,?,?,?,?,?)',
+                                (opp['chave_ek'], 'Forecast', mes_ref, v_rl_26, v_rb_26, agora)
+                            )
 
                 carregadas += 1
             except Exception as e:
